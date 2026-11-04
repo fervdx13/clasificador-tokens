@@ -1,0 +1,35 @@
+// *******************************************************************************
+// * Archivo de prueba para clasificador_tokens.py
+// * Alumno: Fernando Vidal Delgado | No. Control: 2320905
+// *******************************************************************************
+
+int main() {
+    // Declaración de variables numéricas y de texto
+    int iteraciones = 100;
+    float pi_constante = 3.14159265;
+    string saludo = "Bienvenido a Neo-Tokyo 2084";
+    char separador = ';';
+
+    /* Estructura condicional
+       Evaluación de operadores de comparación */
+    if (iteraciones >= 50 && pi_constante != 0.0) {
+        iteraciones += 10;
+        pi_constante = pi_constante * 2.0;
+    } else {
+        iteraciones -= 1;
+        pi_constante = pi_constante / 2.0;
+    }
+
+    // Bucle mientras
+    while (iteraciones > 0) {
+        iteraciones--;
+    }
+
+    // Inyección de casos de error léxico deliberados:
+    int 99variable_invalida = 50;  // Identificador no puede empezar con número
+    @simbolo_no_permitido;        // Carácter especial no perteneciente al lenguaje
+    $monto_total = 1200;          // Símbolo no reconocido
+    string error_cadena = "Cadena abierta sin comilla;
+
+    return 0;
+}

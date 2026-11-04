@@ -1,0 +1,1129 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SYNTH-LEX | Analizador Léxico Cyberpunk Neon</title>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-principal: #0F0C1B;
+            --contenedor-tarjeta: #1A1528;
+            --texto-principal: #E0E6ED;
+            --color-primario: #FF007F;
+            --color-secundario: #00F5D4;
+            --token-reservada: #7B2CBF;
+            --token-cadena: #00F5D4;
+            --token-numero: #F15BB5;
+            --token-error: #FF0055;
+            --token-id: #FFE600;
+        }
+        * { box-sizing: border-box; margin: 0; padding: 0; }
+        body {
+            background-color: var(--bg-principal);
+            color: var(--texto-principal);
+            font-family: 'Rajdhani', sans-serif;
+            background-image: 
+                radial-gradient(ellipse at top, #241142 0%, var(--bg-principal) 70%),
+                linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
+            background-size: 100% 100%, 32px 32px, 32px 32px;
+            min-height: 100vh;
+            padding: 30px 20px;
+        }
+        .container {
+            max-width: 1300px;
+            margin: 0 auto;
+        }
+        header {
+            text-align: center;
+            margin-bottom: 35px;
+            border-bottom: 2px solid var(--color-primario);
+            padding-bottom: 25px;
+            box-shadow: 0 4px 20px rgba(255, 0, 127, 0.25);
+        }
+        h1 {
+            font-family: 'Orbitron', monospace;
+            font-size: 2.8rem;
+            color: var(--color-secundario);
+            text-shadow: 0 0 10px var(--color-secundario), 0 0 25px rgba(0, 245, 212, 0.6);
+            letter-spacing: 4px;
+            margin-bottom: 10px;
+        }
+        .subtitulo {
+            font-size: 1.25rem;
+            color: var(--color-primario);
+            text-shadow: 0 0 8px var(--color-primario);
+            font-weight: 700;
+            letter-spacing: 2px;
+        }
+        .meta-alumno {
+            margin-top: 15px;
+            display: inline-flex;
+            gap: 25px;
+            background: var(--contenedor-tarjeta);
+            padding: 10px 25px;
+            border-radius: 30px;
+            border: 1px solid var(--color-secundario);
+            box-shadow: 0 0 12px rgba(0, 245, 212, 0.3);
+            font-size: 1.05rem;
+        }
+        .meta-alumno strong { color: var(--color-primario); }
+        
+        .grid-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 20px;
+            margin-bottom: 35px;
+        }
+        .stat-card {
+            background: var(--contenedor-tarjeta);
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid var(--color-primario);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 12px 30px rgba(255, 0, 127, 0.3);
+        }
+        .stat-card.turquesa { border-left-color: var(--color-secundario); }
+        .stat-card.fucsia { border-left-color: var(--token-numero); }
+        .stat-card.rojo { border-left-color: var(--token-error); }
+        .stat-title { font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.8; }
+        .stat-val { font-family: 'Orbitron', monospace; font-size: 2.4rem; font-weight: 900; margin-top: 8px; }
+
+        .layout-main {
+            display: grid;
+            grid-template-columns: 1fr 1.6fr;
+            gap: 25px;
+        }
+        @media (max-width: 950px) {
+            .layout-main { grid-template-columns: 1fr; }
+        }
+        .panel {
+            background: var(--contenedor-tarjeta);
+            border-radius: 14px;
+            padding: 22px;
+            border: 1px solid rgba(255, 0, 127, 0.25);
+            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+        }
+        .panel-titulo {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.3rem;
+            color: var(--color-primario);
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            letter-spacing: 1px;
+        }
+        pre.code-editor {
+            background: #090611;
+            padding: 16px;
+            border-radius: 8px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            overflow-x: auto;
+            border: 1px solid #332356;
+            color: #d1d5db;
+            max-height: 520px;
+        }
+        table.tabla-tokens {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+        th, td {
+            padding: 12px 14px;
+            text-align: left;
+        }
+        th {
+            background: #120e1d;
+            color: var(--color-secundario);
+            font-family: 'Orbitron', monospace;
+            font-size: 0.85rem;
+            letter-spacing: 1px;
+            border-bottom: 2px solid var(--color-primario);
+            position: sticky;
+            top: 0;
+        }
+        tr { border-bottom: 1px solid #231c36; transition: background 0.2s; }
+        tr:hover { background: rgba(255, 0, 127, 0.08); }
+        tr.fila-error { background: rgba(255, 0, 85, 0.12); }
+        .badge-cat {
+            display: inline-block;
+            padding: 3px 10px;
+            border-radius: 14px;
+            font-size: 0.8rem;
+            font-weight: 700;
+            border: 1px solid;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+        .badge-pos {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--color-secundario);
+            background: #0d0a17;
+            padding: 2px 6px;
+            border-radius: 4px;
+        }
+        code.lexema-code {
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+        .desc-cell { color: #a0aec0; font-size: 0.9rem; }
+        .scroll-wrapper {
+            max-height: 520px;
+            overflow-y: auto;
+        }
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding-top: 20px;
+            border-top: 1px solid #281d3d;
+            color: #718096;
+            font-size: 0.95rem;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>SYNTH-LEX</h1>
+            <div class="subtitulo">CLASIFICADOR DE TOKENS // ANALIZADOR LÉXICO</div>
+            <div class="meta-alumno">
+                <div>Alumno: <strong>Fernando Vidal Delgado</strong></div>
+                <div>No. Control: <strong>2320905</strong></div>
+                <div>Materia: <strong>Lenguajes y Autómatas / Compiladores</strong></div>
+            </div>
+        </header>
+
+        <section class="grid-stats">
+            <div class="stat-card">
+                <div class="stat-title">Total Tokens</div>
+                <div class="stat-val" style="color: var(--color-primario);">104</div>
+            </div>
+            <div class="stat-card turquesa">
+                <div class="stat-title">Tokens Válidos</div>
+                <div class="stat-val" style="color: var(--color-secundario);">98</div>
+            </div>
+            <div class="stat-card rojo">
+                <div class="stat-title">Errores Léxicos</div>
+                <div class="stat-val" style="color: var(--token-error);">6</div>
+            </div>
+            <div class="stat-card fucsia">
+                <div class="stat-title">Tasa de Aprobación</div>
+                <div class="stat-val" style="color: var(--token-numero);">94.23%</div>
+            </div>
+        </section>
+
+        <main class="layout-main">
+            <section class="panel">
+                <div class="panel-titulo">
+                    <span>⚡</span> Código Fuente Analizado
+                </div>
+                <pre class="code-editor"><code>// *******************************************************************************
+// * Archivo de prueba para clasificador_tokens.py
+// * Alumno: Fernando Vidal Delgado | No. Control: 2320905
+// *******************************************************************************
+
+int main() {
+    // Declaración de variables numéricas y de texto
+    int iteraciones = 100;
+    float pi_constante = 3.14159265;
+    string saludo = "Bienvenido a Neo-Tokyo 2084";
+    char separador = ';';
+
+    /* Estructura condicional
+       Evaluación de operadores de comparación */
+    if (iteraciones &gt;= 50 &amp;&amp; pi_constante != 0.0) {
+        iteraciones += 10;
+        pi_constante = pi_constante * 2.0;
+    } else {
+        iteraciones -= 1;
+        pi_constante = pi_constante / 2.0;
+    }
+
+    // Bucle mientras
+    while (iteraciones &gt; 0) {
+        iteraciones--;
+    }
+
+    // Inyección de casos de error léxico deliberados:
+    int 99variable_invalida = 50;  // Identificador no puede empezar con número
+    @simbolo_no_permitido;        // Carácter especial no perteneciente al lenguaje
+    $monto_total = 1200;          // Símbolo no reconocido
+    string error_cadena = "Cadena abierta sin comilla;
+
+    return 0;
+}
+</code></pre>
+            </section>
+
+            <section class="panel">
+                <div class="panel-titulo">
+                    <span>🔮</span> Tabla de Clasificación de Tokens
+                </div>
+                <div class="scroll-wrapper">
+                    <table class="tabla-tokens">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Posición</th>
+                                <th>Categoría</th>
+                                <th>Lexema</th>
+                                <th>Descripción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+        <tr class="">
+            <td>1</td>
+            <td><span class="badge-pos">L01:C01</span></td>
+            <td><span class="badge-cat" style="border-color: #5C677D; color: #5C677D; box-shadow: 0 0 8px #5C677D44;">Comentario</span></td>
+            <td><code class="lexema-code" style="color: #5C677D;">// *******************************************************************************</code></td>
+            <td class="desc-cell">Comentario explicativo (ignorado en fases posteriores)</td>
+        </tr>
+        
+        <tr class="">
+            <td>2</td>
+            <td><span class="badge-pos">L02:C01</span></td>
+            <td><span class="badge-cat" style="border-color: #5C677D; color: #5C677D; box-shadow: 0 0 8px #5C677D44;">Comentario</span></td>
+            <td><code class="lexema-code" style="color: #5C677D;">// * Archivo de prueba para clasificador_tokens.py</code></td>
+            <td class="desc-cell">Comentario explicativo (ignorado en fases posteriores)</td>
+        </tr>
+        
+        <tr class="">
+            <td>3</td>
+            <td><span class="badge-pos">L03:C01</span></td>
+            <td><span class="badge-cat" style="border-color: #5C677D; color: #5C677D; box-shadow: 0 0 8px #5C677D44;">Comentario</span></td>
+            <td><code class="lexema-code" style="color: #5C677D;">// * Alumno: Fernando Vidal Delgado | No. Control: 2320905</code></td>
+            <td class="desc-cell">Comentario explicativo (ignorado en fases posteriores)</td>
+        </tr>
+        
+        <tr class="">
+            <td>4</td>
+            <td><span class="badge-pos">L04:C01</span></td>
+            <td><span class="badge-cat" style="border-color: #5C677D; color: #5C677D; box-shadow: 0 0 8px #5C677D44;">Comentario</span></td>
+            <td><code class="lexema-code" style="color: #5C677D;">// *******************************************************************************</code></td>
+            <td class="desc-cell">Comentario explicativo (ignorado en fases posteriores)</td>
+        </tr>
+        
+        <tr class="">
+            <td>5</td>
+            <td><span class="badge-pos">L06:C01</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">int</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (int)</td>
+        </tr>
+        
+        <tr class="">
+            <td>6</td>
+            <td><span class="badge-pos">L06:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">main</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (main)</td>
+        </tr>
+        
+        <tr class="">
+            <td>7</td>
+            <td><span class="badge-pos">L06:C09</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">(</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>8</td>
+            <td><span class="badge-pos">L06:C10</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">)</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>9</td>
+            <td><span class="badge-pos">L06:C12</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">{</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>10</td>
+            <td><span class="badge-pos">L07:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #5C677D; color: #5C677D; box-shadow: 0 0 8px #5C677D44;">Comentario</span></td>
+            <td><code class="lexema-code" style="color: #5C677D;">// Declaración de variables numéricas y de texto</code></td>
+            <td class="desc-cell">Comentario explicativo (ignorado en fases posteriores)</td>
+        </tr>
+        
+        <tr class="">
+            <td>11</td>
+            <td><span class="badge-pos">L08:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">int</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (int)</td>
+        </tr>
+        
+        <tr class="">
+            <td>12</td>
+            <td><span class="badge-pos">L08:C09</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">iteraciones</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>13</td>
+            <td><span class="badge-pos">L08:C21</span></td>
+            <td><span class="badge-cat" style="border-color: #FEE440; color: #FEE440; box-shadow: 0 0 8px #FEE44044;">Operador de Asignación</span></td>
+            <td><code class="lexema-code" style="color: #FEE440;">=</code></td>
+            <td class="desc-cell">Operador de asignación (simple o aritmético)</td>
+        </tr>
+        
+        <tr class="">
+            <td>14</td>
+            <td><span class="badge-pos">L08:C23</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Entero</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">100</code></td>
+            <td class="desc-cell">Constante numérica entera</td>
+        </tr>
+        
+        <tr class="">
+            <td>15</td>
+            <td><span class="badge-pos">L08:C26</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>16</td>
+            <td><span class="badge-pos">L09:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">float</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (float)</td>
+        </tr>
+        
+        <tr class="">
+            <td>17</td>
+            <td><span class="badge-pos">L09:C11</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">pi_constante</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>18</td>
+            <td><span class="badge-pos">L09:C24</span></td>
+            <td><span class="badge-cat" style="border-color: #FEE440; color: #FEE440; box-shadow: 0 0 8px #FEE44044;">Operador de Asignación</span></td>
+            <td><code class="lexema-code" style="color: #FEE440;">=</code></td>
+            <td class="desc-cell">Operador de asignación (simple o aritmético)</td>
+        </tr>
+        
+        <tr class="">
+            <td>19</td>
+            <td><span class="badge-pos">L09:C26</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Decimal</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">3.14159265</code></td>
+            <td class="desc-cell">Constante numérica de punto flotante</td>
+        </tr>
+        
+        <tr class="">
+            <td>20</td>
+            <td><span class="badge-pos">L09:C36</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>21</td>
+            <td><span class="badge-pos">L10:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">string</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (string)</td>
+        </tr>
+        
+        <tr class="">
+            <td>22</td>
+            <td><span class="badge-pos">L10:C12</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">saludo</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>23</td>
+            <td><span class="badge-pos">L10:C19</span></td>
+            <td><span class="badge-cat" style="border-color: #FEE440; color: #FEE440; box-shadow: 0 0 8px #FEE44044;">Operador de Asignación</span></td>
+            <td><code class="lexema-code" style="color: #FEE440;">=</code></td>
+            <td class="desc-cell">Operador de asignación (simple o aritmético)</td>
+        </tr>
+        
+        <tr class="">
+            <td>24</td>
+            <td><span class="badge-pos">L10:C21</span></td>
+            <td><span class="badge-cat" style="border-color: #00F5D4; color: #00F5D4; box-shadow: 0 0 8px #00F5D444;">Cadena de Texto</span></td>
+            <td><code class="lexema-code" style="color: #00F5D4;">&quot;Bienvenido a Neo-Tokyo 2084&quot;</code></td>
+            <td class="desc-cell">Literal de cadena de texto entre comillas</td>
+        </tr>
+        
+        <tr class="">
+            <td>25</td>
+            <td><span class="badge-pos">L10:C50</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>26</td>
+            <td><span class="badge-pos">L11:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">char</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (char)</td>
+        </tr>
+        
+        <tr class="">
+            <td>27</td>
+            <td><span class="badge-pos">L11:C10</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">separador</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>28</td>
+            <td><span class="badge-pos">L11:C20</span></td>
+            <td><span class="badge-cat" style="border-color: #FEE440; color: #FEE440; box-shadow: 0 0 8px #FEE44044;">Operador de Asignación</span></td>
+            <td><code class="lexema-code" style="color: #FEE440;">=</code></td>
+            <td class="desc-cell">Operador de asignación (simple o aritmético)</td>
+        </tr>
+        
+        <tr class="">
+            <td>29</td>
+            <td><span class="badge-pos">L11:C22</span></td>
+            <td><span class="badge-cat" style="border-color: #00F5D4; color: #00F5D4; box-shadow: 0 0 8px #00F5D444;">Cadena de Texto</span></td>
+            <td><code class="lexema-code" style="color: #00F5D4;">';'</code></td>
+            <td class="desc-cell">Literal de cadena de texto entre comillas</td>
+        </tr>
+        
+        <tr class="">
+            <td>30</td>
+            <td><span class="badge-pos">L11:C25</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>31</td>
+            <td><span class="badge-pos">L13:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #5C677D; color: #5C677D; box-shadow: 0 0 8px #5C677D44;">Comentario</span></td>
+            <td><code class="lexema-code" style="color: #5C677D;">/* Estructura condicional
+       Evaluación de operadores de comparación */</code></td>
+            <td class="desc-cell">Comentario explicativo (ignorado en fases posteriores)</td>
+        </tr>
+        
+        <tr class="">
+            <td>32</td>
+            <td><span class="badge-pos">L15:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">if</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (if)</td>
+        </tr>
+        
+        <tr class="">
+            <td>33</td>
+            <td><span class="badge-pos">L15:C08</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">(</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>34</td>
+            <td><span class="badge-pos">L15:C09</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">iteraciones</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>35</td>
+            <td><span class="badge-pos">L15:C21</span></td>
+            <td><span class="badge-cat" style="border-color: #9B5DE5; color: #9B5DE5; box-shadow: 0 0 8px #9B5DE544;">Operador de Comparación</span></td>
+            <td><code class="lexema-code" style="color: #9B5DE5;">&gt;=</code></td>
+            <td class="desc-cell">Operador relacional de comparación</td>
+        </tr>
+        
+        <tr class="">
+            <td>36</td>
+            <td><span class="badge-pos">L15:C24</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Entero</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">50</code></td>
+            <td class="desc-cell">Constante numérica entera</td>
+        </tr>
+        
+        <tr class="fila-error">
+            <td>37</td>
+            <td><span class="badge-pos">L15:C27</span></td>
+            <td><span class="badge-cat" style="border-color: #FF0055; color: #FF0055; box-shadow: 0 0 8px #FF005544;">Error Léxico / No Reconocido</span></td>
+            <td><code class="lexema-code" style="color: #FF0055;">&amp;</code></td>
+            <td class="desc-cell">Error léxico: Carácter no permitido '&' (Código ASCII: 38)</td>
+        </tr>
+        
+        <tr class="fila-error">
+            <td>38</td>
+            <td><span class="badge-pos">L15:C28</span></td>
+            <td><span class="badge-cat" style="border-color: #FF0055; color: #FF0055; box-shadow: 0 0 8px #FF005544;">Error Léxico / No Reconocido</span></td>
+            <td><code class="lexema-code" style="color: #FF0055;">&amp;</code></td>
+            <td class="desc-cell">Error léxico: Carácter no permitido '&' (Código ASCII: 38)</td>
+        </tr>
+        
+        <tr class="">
+            <td>39</td>
+            <td><span class="badge-pos">L15:C30</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">pi_constante</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>40</td>
+            <td><span class="badge-pos">L15:C43</span></td>
+            <td><span class="badge-cat" style="border-color: #9B5DE5; color: #9B5DE5; box-shadow: 0 0 8px #9B5DE544;">Operador de Comparación</span></td>
+            <td><code class="lexema-code" style="color: #9B5DE5;">!=</code></td>
+            <td class="desc-cell">Operador relacional de comparación</td>
+        </tr>
+        
+        <tr class="">
+            <td>41</td>
+            <td><span class="badge-pos">L15:C46</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Decimal</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">0.0</code></td>
+            <td class="desc-cell">Constante numérica de punto flotante</td>
+        </tr>
+        
+        <tr class="">
+            <td>42</td>
+            <td><span class="badge-pos">L15:C49</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">)</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>43</td>
+            <td><span class="badge-pos">L15:C51</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">{</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>44</td>
+            <td><span class="badge-pos">L16:C09</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">iteraciones</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>45</td>
+            <td><span class="badge-pos">L16:C21</span></td>
+            <td><span class="badge-cat" style="border-color: #FEE440; color: #FEE440; box-shadow: 0 0 8px #FEE44044;">Operador de Asignación</span></td>
+            <td><code class="lexema-code" style="color: #FEE440;">+=</code></td>
+            <td class="desc-cell">Operador de asignación (simple o aritmético)</td>
+        </tr>
+        
+        <tr class="">
+            <td>46</td>
+            <td><span class="badge-pos">L16:C24</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Entero</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">10</code></td>
+            <td class="desc-cell">Constante numérica entera</td>
+        </tr>
+        
+        <tr class="">
+            <td>47</td>
+            <td><span class="badge-pos">L16:C26</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>48</td>
+            <td><span class="badge-pos">L17:C09</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">pi_constante</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>49</td>
+            <td><span class="badge-pos">L17:C22</span></td>
+            <td><span class="badge-cat" style="border-color: #FEE440; color: #FEE440; box-shadow: 0 0 8px #FEE44044;">Operador de Asignación</span></td>
+            <td><code class="lexema-code" style="color: #FEE440;">=</code></td>
+            <td class="desc-cell">Operador de asignación (simple o aritmético)</td>
+        </tr>
+        
+        <tr class="">
+            <td>50</td>
+            <td><span class="badge-pos">L17:C24</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">pi_constante</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>51</td>
+            <td><span class="badge-pos">L17:C37</span></td>
+            <td><span class="badge-cat" style="border-color: #00BBF9; color: #00BBF9; box-shadow: 0 0 8px #00BBF944;">Operador Aritmético</span></td>
+            <td><code class="lexema-code" style="color: #00BBF9;">*</code></td>
+            <td class="desc-cell">Operador aritmético binario o unario</td>
+        </tr>
+        
+        <tr class="">
+            <td>52</td>
+            <td><span class="badge-pos">L17:C39</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Decimal</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">2.0</code></td>
+            <td class="desc-cell">Constante numérica de punto flotante</td>
+        </tr>
+        
+        <tr class="">
+            <td>53</td>
+            <td><span class="badge-pos">L17:C42</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>54</td>
+            <td><span class="badge-pos">L18:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">}</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>55</td>
+            <td><span class="badge-pos">L18:C07</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">else</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (else)</td>
+        </tr>
+        
+        <tr class="">
+            <td>56</td>
+            <td><span class="badge-pos">L18:C12</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">{</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>57</td>
+            <td><span class="badge-pos">L19:C09</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">iteraciones</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>58</td>
+            <td><span class="badge-pos">L19:C21</span></td>
+            <td><span class="badge-cat" style="border-color: #FEE440; color: #FEE440; box-shadow: 0 0 8px #FEE44044;">Operador de Asignación</span></td>
+            <td><code class="lexema-code" style="color: #FEE440;">-=</code></td>
+            <td class="desc-cell">Operador de asignación (simple o aritmético)</td>
+        </tr>
+        
+        <tr class="">
+            <td>59</td>
+            <td><span class="badge-pos">L19:C24</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Entero</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">1</code></td>
+            <td class="desc-cell">Constante numérica entera</td>
+        </tr>
+        
+        <tr class="">
+            <td>60</td>
+            <td><span class="badge-pos">L19:C25</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>61</td>
+            <td><span class="badge-pos">L20:C09</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">pi_constante</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>62</td>
+            <td><span class="badge-pos">L20:C22</span></td>
+            <td><span class="badge-cat" style="border-color: #FEE440; color: #FEE440; box-shadow: 0 0 8px #FEE44044;">Operador de Asignación</span></td>
+            <td><code class="lexema-code" style="color: #FEE440;">=</code></td>
+            <td class="desc-cell">Operador de asignación (simple o aritmético)</td>
+        </tr>
+        
+        <tr class="">
+            <td>63</td>
+            <td><span class="badge-pos">L20:C24</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">pi_constante</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>64</td>
+            <td><span class="badge-pos">L20:C37</span></td>
+            <td><span class="badge-cat" style="border-color: #00BBF9; color: #00BBF9; box-shadow: 0 0 8px #00BBF944;">Operador Aritmético</span></td>
+            <td><code class="lexema-code" style="color: #00BBF9;">/</code></td>
+            <td class="desc-cell">Operador aritmético binario o unario</td>
+        </tr>
+        
+        <tr class="">
+            <td>65</td>
+            <td><span class="badge-pos">L20:C39</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Decimal</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">2.0</code></td>
+            <td class="desc-cell">Constante numérica de punto flotante</td>
+        </tr>
+        
+        <tr class="">
+            <td>66</td>
+            <td><span class="badge-pos">L20:C42</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>67</td>
+            <td><span class="badge-pos">L21:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">}</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>68</td>
+            <td><span class="badge-pos">L23:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #5C677D; color: #5C677D; box-shadow: 0 0 8px #5C677D44;">Comentario</span></td>
+            <td><code class="lexema-code" style="color: #5C677D;">// Bucle mientras</code></td>
+            <td class="desc-cell">Comentario explicativo (ignorado en fases posteriores)</td>
+        </tr>
+        
+        <tr class="">
+            <td>69</td>
+            <td><span class="badge-pos">L24:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">while</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (while)</td>
+        </tr>
+        
+        <tr class="">
+            <td>70</td>
+            <td><span class="badge-pos">L24:C11</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">(</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>71</td>
+            <td><span class="badge-pos">L24:C12</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">iteraciones</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>72</td>
+            <td><span class="badge-pos">L24:C24</span></td>
+            <td><span class="badge-cat" style="border-color: #9B5DE5; color: #9B5DE5; box-shadow: 0 0 8px #9B5DE544;">Operador de Comparación</span></td>
+            <td><code class="lexema-code" style="color: #9B5DE5;">&gt;</code></td>
+            <td class="desc-cell">Operador relacional de comparación</td>
+        </tr>
+        
+        <tr class="">
+            <td>73</td>
+            <td><span class="badge-pos">L24:C26</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Entero</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">0</code></td>
+            <td class="desc-cell">Constante numérica entera</td>
+        </tr>
+        
+        <tr class="">
+            <td>74</td>
+            <td><span class="badge-pos">L24:C27</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">)</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>75</td>
+            <td><span class="badge-pos">L24:C29</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">{</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>76</td>
+            <td><span class="badge-pos">L25:C09</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">iteraciones</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>77</td>
+            <td><span class="badge-pos">L25:C20</span></td>
+            <td><span class="badge-cat" style="border-color: #00BBF9; color: #00BBF9; box-shadow: 0 0 8px #00BBF944;">Operador Aritmético</span></td>
+            <td><code class="lexema-code" style="color: #00BBF9;">--</code></td>
+            <td class="desc-cell">Operador aritmético binario o unario</td>
+        </tr>
+        
+        <tr class="">
+            <td>78</td>
+            <td><span class="badge-pos">L25:C22</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>79</td>
+            <td><span class="badge-pos">L26:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">}</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>80</td>
+            <td><span class="badge-pos">L28:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #5C677D; color: #5C677D; box-shadow: 0 0 8px #5C677D44;">Comentario</span></td>
+            <td><code class="lexema-code" style="color: #5C677D;">// Inyección de casos de error léxico deliberados:</code></td>
+            <td class="desc-cell">Comentario explicativo (ignorado en fases posteriores)</td>
+        </tr>
+        
+        <tr class="">
+            <td>81</td>
+            <td><span class="badge-pos">L29:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">int</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (int)</td>
+        </tr>
+        
+        <tr class="fila-error">
+            <td>82</td>
+            <td><span class="badge-pos">L29:C09</span></td>
+            <td><span class="badge-cat" style="border-color: #FF0055; color: #FF0055; box-shadow: 0 0 8px #FF005544;">Error Léxico / No Reconocido</span></td>
+            <td><code class="lexema-code" style="color: #FF0055;">99variable_invalida</code></td>
+            <td class="desc-cell">Error léxico: Identificador inválido '99variable_invalida'. No puede iniciar con dígito</td>
+        </tr>
+        
+        <tr class="">
+            <td>83</td>
+            <td><span class="badge-pos">L29:C29</span></td>
+            <td><span class="badge-cat" style="border-color: #FEE440; color: #FEE440; box-shadow: 0 0 8px #FEE44044;">Operador de Asignación</span></td>
+            <td><code class="lexema-code" style="color: #FEE440;">=</code></td>
+            <td class="desc-cell">Operador de asignación (simple o aritmético)</td>
+        </tr>
+        
+        <tr class="">
+            <td>84</td>
+            <td><span class="badge-pos">L29:C31</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Entero</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">50</code></td>
+            <td class="desc-cell">Constante numérica entera</td>
+        </tr>
+        
+        <tr class="">
+            <td>85</td>
+            <td><span class="badge-pos">L29:C33</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>86</td>
+            <td><span class="badge-pos">L29:C36</span></td>
+            <td><span class="badge-cat" style="border-color: #5C677D; color: #5C677D; box-shadow: 0 0 8px #5C677D44;">Comentario</span></td>
+            <td><code class="lexema-code" style="color: #5C677D;">// Identificador no puede empezar con número</code></td>
+            <td class="desc-cell">Comentario explicativo (ignorado en fases posteriores)</td>
+        </tr>
+        
+        <tr class="fila-error">
+            <td>87</td>
+            <td><span class="badge-pos">L30:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #FF0055; color: #FF0055; box-shadow: 0 0 8px #FF005544;">Error Léxico / No Reconocido</span></td>
+            <td><code class="lexema-code" style="color: #FF0055;">@</code></td>
+            <td class="desc-cell">Error léxico: Carácter no permitido '@' (Código ASCII: 64)</td>
+        </tr>
+        
+        <tr class="">
+            <td>88</td>
+            <td><span class="badge-pos">L30:C06</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">simbolo_no_permitido</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>89</td>
+            <td><span class="badge-pos">L30:C26</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>90</td>
+            <td><span class="badge-pos">L30:C35</span></td>
+            <td><span class="badge-cat" style="border-color: #5C677D; color: #5C677D; box-shadow: 0 0 8px #5C677D44;">Comentario</span></td>
+            <td><code class="lexema-code" style="color: #5C677D;">// Carácter especial no perteneciente al lenguaje</code></td>
+            <td class="desc-cell">Comentario explicativo (ignorado en fases posteriores)</td>
+        </tr>
+        
+        <tr class="fila-error">
+            <td>91</td>
+            <td><span class="badge-pos">L31:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #FF0055; color: #FF0055; box-shadow: 0 0 8px #FF005544;">Error Léxico / No Reconocido</span></td>
+            <td><code class="lexema-code" style="color: #FF0055;">$</code></td>
+            <td class="desc-cell">Error léxico: Carácter no permitido '$' (Código ASCII: 36)</td>
+        </tr>
+        
+        <tr class="">
+            <td>92</td>
+            <td><span class="badge-pos">L31:C06</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">monto_total</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>93</td>
+            <td><span class="badge-pos">L31:C18</span></td>
+            <td><span class="badge-cat" style="border-color: #FEE440; color: #FEE440; box-shadow: 0 0 8px #FEE44044;">Operador de Asignación</span></td>
+            <td><code class="lexema-code" style="color: #FEE440;">=</code></td>
+            <td class="desc-cell">Operador de asignación (simple o aritmético)</td>
+        </tr>
+        
+        <tr class="">
+            <td>94</td>
+            <td><span class="badge-pos">L31:C20</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Entero</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">1200</code></td>
+            <td class="desc-cell">Constante numérica entera</td>
+        </tr>
+        
+        <tr class="">
+            <td>95</td>
+            <td><span class="badge-pos">L31:C24</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>96</td>
+            <td><span class="badge-pos">L31:C35</span></td>
+            <td><span class="badge-cat" style="border-color: #5C677D; color: #5C677D; box-shadow: 0 0 8px #5C677D44;">Comentario</span></td>
+            <td><code class="lexema-code" style="color: #5C677D;">// Símbolo no reconocido</code></td>
+            <td class="desc-cell">Comentario explicativo (ignorado en fases posteriores)</td>
+        </tr>
+        
+        <tr class="">
+            <td>97</td>
+            <td><span class="badge-pos">L32:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">string</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (string)</td>
+        </tr>
+        
+        <tr class="">
+            <td>98</td>
+            <td><span class="badge-pos">L32:C12</span></td>
+            <td><span class="badge-cat" style="border-color: #FFE600; color: #FFE600; box-shadow: 0 0 8px #FFE60044;">Identificador</span></td>
+            <td><code class="lexema-code" style="color: #FFE600;">error_cadena</code></td>
+            <td class="desc-cell">Identificador de usuario (variable, función, clase)</td>
+        </tr>
+        
+        <tr class="">
+            <td>99</td>
+            <td><span class="badge-pos">L32:C25</span></td>
+            <td><span class="badge-cat" style="border-color: #FEE440; color: #FEE440; box-shadow: 0 0 8px #FEE44044;">Operador de Asignación</span></td>
+            <td><code class="lexema-code" style="color: #FEE440;">=</code></td>
+            <td class="desc-cell">Operador de asignación (simple o aritmético)</td>
+        </tr>
+        
+        <tr class="fila-error">
+            <td>100</td>
+            <td><span class="badge-pos">L32:C27</span></td>
+            <td><span class="badge-cat" style="border-color: #FF0055; color: #FF0055; box-shadow: 0 0 8px #FF005544;">Error Léxico / No Reconocido</span></td>
+            <td><code class="lexema-code" style="color: #FF0055;">&quot;Cadena abierta sin comilla;</code></td>
+            <td class="desc-cell">Error léxico: Cadena de texto abierta sin comilla de cierre en la línea</td>
+        </tr>
+        
+        <tr class="">
+            <td>101</td>
+            <td><span class="badge-pos">L34:C05</span></td>
+            <td><span class="badge-cat" style="border-color: #7B2CBF; color: #7B2CBF; box-shadow: 0 0 8px #7B2CBF44;">Palabra Reservada</span></td>
+            <td><code class="lexema-code" style="color: #7B2CBF;">return</code></td>
+            <td class="desc-cell">Palabra clave reservada del lenguaje (return)</td>
+        </tr>
+        
+        <tr class="">
+            <td>102</td>
+            <td><span class="badge-pos">L34:C12</span></td>
+            <td><span class="badge-cat" style="border-color: #F15BB5; color: #F15BB5; box-shadow: 0 0 8px #F15BB544;">Número Entero</span></td>
+            <td><code class="lexema-code" style="color: #F15BB5;">0</code></td>
+            <td class="desc-cell">Constante numérica entera</td>
+        </tr>
+        
+        <tr class="">
+            <td>103</td>
+            <td><span class="badge-pos">L34:C13</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">;</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+        <tr class="">
+            <td>104</td>
+            <td><span class="badge-pos">L35:C01</span></td>
+            <td><span class="badge-cat" style="border-color: #A29BFE; color: #A29BFE; box-shadow: 0 0 8px #A29BFE44;">Delimitador</span></td>
+            <td><code class="lexema-code" style="color: #A29BFE;">}</code></td>
+            <td class="desc-cell">Símbolo delimitador / separador sintáctico</td>
+        </tr>
+        
+                        </tbody>
+                    </table>
+                </div>
+            </section>
+        </main>
+
+        <footer>
+            SYNTH-LEX VAPORWAVE / CYBERPUNK EDITION • Proyecto Escolar 2320905 • Compiladores
+        </footer>
+    </div>
+</body>
+</html>
