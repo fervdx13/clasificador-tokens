@@ -634,318 +634,44 @@ class InterfazCyberpunkCLI:
 
 
 # ==============================================================================
-# SECCIÓN 5: GENERADOR DE DASHBOARD WEB CYBERPUNK (HTML5/CSS3)
+# ==============================================================================
+# SECCIÓN 5: GENERADOR DE DASHBOARD WEB CYBERPUNK (HTML5/CSS3) - GITHUB PAGES
 # ==============================================================================
 
-def generar_reporte_html(tokens: List[Token], codigo_original: str, ruta_salida: Optional[str] = None) -> str:
+def generar_reporte_html(tokens: Optional[List[Token]] = None, codigo_original: Optional[str] = None, ruta_salida: Optional[str] = None) -> str:
     """
-    Genera un archivo HTML5 interactivo y autónomo con la paleta oficial
-    Vaporwave / Cyberpunk Neon, permitiendo inspeccionar tokens y código.
+    Genera el archivo HTML5 interactivo y dinámico (index.html / clasificador_tokens.html)
+    con el Evaluador de Lexema Único y el Analizador de Código Dinámico en tiempo real,
+    manteniendo estrictamente la paleta Vaporwave / Cyberpunk Neon.
     """
+    directorio_script = os.path.dirname(os.path.abspath(__file__))
     if ruta_salida is None:
-        directorio_script = os.path.dirname(os.path.abspath(__file__))
-        ruta_salida = os.path.join(directorio_script, "clasificador_tokens.html")
+        ruta_salida = os.path.join(directorio_script, "index.html")
 
-    stats = AnalizadorLexico.obtener_estadisticas(tokens)
-    filas_html = []
-    
-    for i, t in enumerate(tokens, 1):
-        color = t.color_hex
-        es_error = t.categoria == CategoriaToken.ERROR_LEXICO
-        clase_fila = "fila-error" if es_error else ""
-        lexema_escapado = (
-            t.lexema.replace("&", "&amp;")
-                    .replace("<", "&lt;")
-                    .replace(">", "&gt;")
-                    .replace('"', "&quot;")
-        )
-        desc_escapada = t.descripcion.replace("<", "&lt;").replace(">", "&gt;")
+    ruta_index_existente = os.path.join(directorio_script, "index.html")
+    if os.path.exists(ruta_index_existente) and os.path.abspath(ruta_salida) != os.path.abspath(ruta_index_existente):
+        with open(ruta_index_existente, "r", encoding="utf-8") as f_in:
+            contenido_html = f_in.read()
+        with open(ruta_salida, "w", encoding="utf-8") as f_out:
+            f_out.write(contenido_html)
+    elif os.path.exists(ruta_index_existente):
+        with open(ruta_index_existente, "r", encoding="utf-8") as f:
+            contenido_html = f.read()
+    else:
+        contenido_html = "<!DOCTYPE html><html><head><title>SYNTH-LEX</title></head><body>Consulte index.html</body></html>"
+        with open(ruta_salida, "w", encoding="utf-8") as f:
+            f.write(contenido_html)
 
-        filas_html.append(f"""
-        <tr class="{clase_fila}">
-            <td>{i}</td>
-            <td><span class="badge-pos">L{t.linea:02d}:C{t.columna:02d}</span></td>
-            <td><span class="badge-cat" style="border-color: {color}; color: {color}; box-shadow: 0 0 8px {color}44;">{t.categoria.value}</span></td>
-            <td><code class="lexema-code" style="color: {color};">{lexema_escapado}</code></td>
-            <td class="desc-cell">{desc_escapada}</td>
-        </tr>
-        """)
-
-    codigo_escapado = (
-        codigo_original.replace("&", "&amp;")
-                       .replace("<", "&lt;")
-                       .replace(">", "&gt;")
-    )
-
-    plantilla = f"""<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SYNTH-LEX | Analizador Léxico Cyberpunk Neon</title>
-    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600;700&family=Orbitron:wght@700;900&family=Rajdhani:wght@500;700&display=swap" rel="stylesheet">
-    <style>
-        :root {{
-            --bg-principal: {PaletaVaporwave.FONDO_PRINCIPAL};
-            --contenedor-tarjeta: {PaletaVaporwave.CONTENEDOR_TARJETA};
-            --texto-principal: {PaletaVaporwave.TEXTO_PRINCIPAL};
-            --color-primario: {PaletaVaporwave.COLOR_PRIMARIO};
-            --color-secundario: {PaletaVaporwave.COLOR_SECUNDARIO};
-            --token-reservada: {PaletaVaporwave.TOKEN_RESERVADA};
-            --token-cadena: {PaletaVaporwave.TOKEN_CADENA};
-            --token-numero: {PaletaVaporwave.TOKEN_NUMERO};
-            --token-error: {PaletaVaporwave.TOKEN_ERROR};
-            --token-id: {PaletaVaporwave.TOKEN_IDENTIFICADOR};
-        }}
-        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
-        body {{
-            background-color: var(--bg-principal);
-            color: var(--texto-principal);
-            font-family: 'Rajdhani', sans-serif;
-            background-image: 
-                radial-gradient(ellipse at top, #241142 0%, var(--bg-principal) 70%),
-                linear-gradient(rgba(0, 245, 212, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(0, 245, 212, 0.03) 1px, transparent 1px);
-            background-size: 100% 100%, 32px 32px, 32px 32px;
-            min-height: 100vh;
-            padding: 30px 20px;
-        }}
-        .container {{
-            max-width: 1300px;
-            margin: 0 auto;
-        }}
-        header {{
-            text-align: center;
-            margin-bottom: 35px;
-            border-bottom: 2px solid var(--color-primario);
-            padding-bottom: 25px;
-            box-shadow: 0 4px 20px rgba(255, 0, 127, 0.25);
-        }}
-        h1 {{
-            font-family: 'Orbitron', monospace;
-            font-size: 2.8rem;
-            color: var(--color-secundario);
-            text-shadow: 0 0 10px var(--color-secundario), 0 0 25px rgba(0, 245, 212, 0.6);
-            letter-spacing: 4px;
-            margin-bottom: 10px;
-        }}
-        .subtitulo {{
-            font-size: 1.25rem;
-            color: var(--color-primario);
-            text-shadow: 0 0 8px var(--color-primario);
-            font-weight: 700;
-            letter-spacing: 2px;
-        }}
-        .meta-alumno {{
-            margin-top: 15px;
-            display: inline-flex;
-            gap: 25px;
-            background: var(--contenedor-tarjeta);
-            padding: 10px 25px;
-            border-radius: 30px;
-            border: 1px solid var(--color-secundario);
-            box-shadow: 0 0 12px rgba(0, 245, 212, 0.3);
-            font-size: 1.05rem;
-        }}
-        .meta-alumno strong {{ color: var(--color-primario); }}
-        
-        .grid-stats {{
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-            gap: 20px;
-            margin-bottom: 35px;
-        }}
-        .stat-card {{
-            background: var(--contenedor-tarjeta);
-            padding: 20px;
-            border-radius: 12px;
-            border-left: 4px solid var(--color-primario);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.5);
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-        }}
-        .stat-card:hover {{
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(255, 0, 127, 0.3);
-        }}
-        .stat-card.turquesa {{ border-left-color: var(--color-secundario); }}
-        .stat-card.fucsia {{ border-left-color: var(--token-numero); }}
-        .stat-card.rojo {{ border-left-color: var(--token-error); }}
-        .stat-title {{ font-size: 0.95rem; text-transform: uppercase; letter-spacing: 1.5px; opacity: 0.8; }}
-        .stat-val {{ font-family: 'Orbitron', monospace; font-size: 2.4rem; font-weight: 900; margin-top: 8px; }}
-
-        .layout-main {{
-            display: grid;
-            grid-template-columns: 1fr 1.6fr;
-            gap: 25px;
-        }}
-        @media (max-width: 950px) {{
-            .layout-main {{ grid-template-columns: 1fr; }}
-        }}
-        .panel {{
-            background: var(--contenedor-tarjeta);
-            border-radius: 14px;
-            padding: 22px;
-            border: 1px solid rgba(255, 0, 127, 0.25);
-            box-shadow: 0 10px 30px rgba(0,0,0,0.6);
-        }}
-        .panel-titulo {{
-            font-family: 'Orbitron', sans-serif;
-            font-size: 1.3rem;
-            color: var(--color-primario);
-            margin-bottom: 15px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            letter-spacing: 1px;
-        }}
-        pre.code-editor {{
-            background: #090611;
-            padding: 16px;
-            border-radius: 8px;
-            font-family: 'Fira Code', monospace;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            overflow-x: auto;
-            border: 1px solid #332356;
-            color: #d1d5db;
-            max-height: 520px;
-        }}
-        table.tabla-tokens {{
-            width: 100%;
-            border-collapse: collapse;
-            font-size: 0.95rem;
-        }}
-        th, td {{
-            padding: 12px 14px;
-            text-align: left;
-        }}
-        th {{
-            background: #120e1d;
-            color: var(--color-secundario);
-            font-family: 'Orbitron', monospace;
-            font-size: 0.85rem;
-            letter-spacing: 1px;
-            border-bottom: 2px solid var(--color-primario);
-            position: sticky;
-            top: 0;
-        }}
-        tr {{ border-bottom: 1px solid #231c36; transition: background 0.2s; }}
-        tr:hover {{ background: rgba(255, 0, 127, 0.08); }}
-        tr.fila-error {{ background: rgba(255, 0, 85, 0.12); }}
-        .badge-cat {{
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 14px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            border: 1px solid;
-            letter-spacing: 0.5px;
-            text-transform: uppercase;
-        }}
-        .badge-pos {{
-            font-family: 'Fira Code', monospace;
-            font-size: 0.85rem;
-            color: var(--color-secundario);
-            background: #0d0a17;
-            padding: 2px 6px;
-            border-radius: 4px;
-        }}
-        code.lexema-code {{
-            font-family: 'Fira Code', monospace;
-            font-weight: 700;
-            font-size: 1rem;
-        }}
-        .desc-cell {{ color: #a0aec0; font-size: 0.9rem; }}
-        .scroll-wrapper {{
-            max-height: 520px;
-            overflow-y: auto;
-        }}
-        footer {{
-            text-align: center;
-            margin-top: 40px;
-            padding-top: 20px;
-            border-top: 1px solid #281d3d;
-            color: #718096;
-            font-size: 0.95rem;
-        }}
-    </style>
-</head>
-<body>
-    <div class="container">
-        <header>
-            <h1>SYNTH-LEX</h1>
-            <div class="subtitulo">CLASIFICADOR DE TOKENS // ANALIZADOR LÉXICO</div>
-            <div class="meta-alumno">
-                <div>Alumno: <strong>Fernando Vidal Delgado</strong></div>
-                <div>No. Control: <strong>2320905</strong></div>
-                <div>Materia: <strong>Lenguajes y Autómatas / Compiladores</strong></div>
-            </div>
-        </header>
-
-        <section class="grid-stats">
-            <div class="stat-card">
-                <div class="stat-title">Total Tokens</div>
-                <div class="stat-val" style="color: var(--color-primario);">{stats['total_tokens']}</div>
-            </div>
-            <div class="stat-card turquesa">
-                <div class="stat-title">Tokens Válidos</div>
-                <div class="stat-val" style="color: var(--color-secundario);">{stats['tokens_validos']}</div>
-            </div>
-            <div class="stat-card rojo">
-                <div class="stat-title">Errores Léxicos</div>
-                <div class="stat-val" style="color: var(--token-error);">{stats['errores_lexicos']}</div>
-            </div>
-            <div class="stat-card fucsia">
-                <div class="stat-title">Tasa de Aprobación</div>
-                <div class="stat-val" style="color: var(--token-numero);">{stats['tasa_validez']}%</div>
-            </div>
-        </section>
-
-        <main class="layout-main">
-            <section class="panel">
-                <div class="panel-titulo">
-                    <span>⚡</span> Código Fuente Analizado
-                </div>
-                <pre class="code-editor"><code>{codigo_escapado}</code></pre>
-            </section>
-
-            <section class="panel">
-                <div class="panel-titulo">
-                    <span>🔮</span> Tabla de Clasificación de Tokens
-                </div>
-                <div class="scroll-wrapper">
-                    <table class="tabla-tokens">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Posición</th>
-                                <th>Categoría</th>
-                                <th>Lexema</th>
-                                <th>Descripción</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {"".join(filas_html)}
-                        </tbody>
-                    </table>
-                </div>
-            </section>
-        </main>
-
-        <footer>
-            SYNTH-LEX VAPORWAVE / CYBERPUNK EDITION • Proyecto Escolar 2320905 • Compiladores
-        </footer>
-    </div>
-</body>
-</html>"""
-
-    with open(ruta_salida, "w", encoding="utf-8") as f:
-        f.write(plantilla)
+    # Sincronizar clasificador_tokens.html para compatibilidad
+    ruta_tokens_html = os.path.join(directorio_script, "clasificador_tokens.html")
+    try:
+        with open(ruta_tokens_html, "w", encoding="utf-8") as f_sync:
+            f_sync.write(contenido_html)
+    except Exception:
+        pass
 
     return os.path.abspath(ruta_salida)
 
-
-# ==============================================================================
 # SECCIÓN 6: INTERFAZ GRÁFICA DE USUARIO EN TKINTER (CYBERPUNK NEON GUI)
 # ==============================================================================
 
