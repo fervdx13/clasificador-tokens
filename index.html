@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SYNTH-LEX | Analizador Léxico Cyberpunk Neon</title>
-    <!-- Fuentes Google Fonts para estética Retro Synthwave / Cyberpunk -->
+    <!-- Tipografías Google Fonts Oficiales: Orbitron, Rajdhani y Fira Code -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;600;700&family=Orbitron:wght@600;700;800;900&family=Rajdhani:wght@500;600;700&display=swap" rel="stylesheet">
@@ -31,7 +31,7 @@
             --token-delimitador: #A29BFE;
             --token-comentario: #5C677D;
 
-            /* Superficies y bordes */
+            /* Superficies y resplandores */
             --borde-suave: rgba(255, 0, 127, 0.25);
             --borde-neon: rgba(0, 245, 212, 0.35);
         }
@@ -47,16 +47,16 @@
             color: var(--texto-principal);
             font-family: 'Rajdhani', sans-serif;
             background-image: 
-                radial-gradient(ellipse at 50% 0%, #2a124d 0%, var(--bg-principal) 65%),
+                radial-gradient(ellipse at 50% 0%, #29114d 0%, var(--bg-principal) 65%),
                 linear-gradient(rgba(0, 245, 212, 0.025) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(0, 245, 212, 0.025) 1px, transparent 1px);
             background-size: 100% 100%, 36px 36px, 36px 36px;
             min-height: 100vh;
-            padding: 24px 18px 40px;
+            padding: 24px 18px 45px;
         }
 
         .container {
-            max-width: 1360px;
+            max-width: 1380px;
             margin: 0 auto;
         }
 
@@ -76,7 +76,7 @@
             font-size: 0.8rem;
             color: var(--color-secundario);
             border: 1px solid var(--color-secundario);
-            padding: 3px 14px;
+            padding: 4px 16px;
             border-radius: 20px;
             letter-spacing: 2px;
             margin-bottom: 10px;
@@ -86,7 +86,7 @@
 
         h1 {
             font-family: 'Orbitron', sans-serif;
-            font-size: 3rem;
+            font-size: 3.1rem;
             color: var(--color-secundario);
             text-shadow: 0 0 12px var(--color-secundario), 0 0 30px rgba(0, 245, 212, 0.6);
             letter-spacing: 5px;
@@ -253,12 +253,13 @@
             background: #0d0a17;
             border: 1px solid #38275c;
             color: var(--color-secundario);
-            padding: 4px 12px;
+            padding: 5px 13px;
             border-radius: 16px;
             font-family: 'Fira Code', monospace;
             font-size: 0.85rem;
             cursor: pointer;
             transition: all 0.2s ease;
+            user-select: none;
         }
 
         .chip-btn:hover {
@@ -293,9 +294,17 @@
             }
         }
 
+        .res-sublabel {
+            font-size: 0.8rem;
+            color: #8e9db2;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 4px;
+        }
+
         .resultado-lexema-val {
             font-family: 'Fira Code', monospace;
-            font-size: 1.4rem;
+            font-size: 1.35rem;
             font-weight: 700;
             color: #ffffff;
             background: #140d25;
@@ -303,6 +312,7 @@
             border-radius: 6px;
             border-left: 4px solid var(--color-secundario);
             display: inline-block;
+            word-break: break-all;
         }
 
         .resultado-detalles {
@@ -313,7 +323,7 @@
 
         .resultado-cat-badge {
             font-family: 'Orbitron', monospace;
-            font-size: 0.95rem;
+            font-size: 1rem;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -327,13 +337,14 @@
 
         .resultado-estado-badge {
             font-family: 'Orbitron', monospace;
-            padding: 6px 16px;
+            padding: 7px 18px;
             border-radius: 20px;
             font-size: 0.85rem;
             font-weight: 800;
             letter-spacing: 1.5px;
             text-align: center;
             border: 1px solid;
+            white-space: nowrap;
         }
 
         .estado-valido {
@@ -358,7 +369,7 @@
             margin-bottom: 30px;
         }
 
-        @media (max-width: 1024px) {
+        @media (max-width: 1040px) {
             .layout-analizador {
                 grid-template-columns: 1fr;
             }
@@ -399,6 +410,7 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            user-select: none;
         }
 
         .btn-neon-magenta:hover {
@@ -418,6 +430,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.25s ease;
+            user-select: none;
         }
 
         .btn-neon-turquesa:hover {
@@ -438,6 +451,7 @@
             border-radius: 8px;
             cursor: pointer;
             transition: all 0.25s ease;
+            user-select: none;
         }
 
         .btn-neon-rojo:hover {
@@ -459,6 +473,7 @@
             cursor: pointer;
             margin-left: auto;
             transition: all 0.2s ease;
+            user-select: none;
         }
 
         .btn-neon-gris:hover {
@@ -665,12 +680,12 @@
         }
 
         .pulse-update {
-            animation: pulseGlow 0.5s ease;
+            animation: pulseGlow 0.45s ease;
         }
 
         @keyframes pulseGlow {
             0% { transform: scale(1); }
-            50% { transform: scale(1.05); filter: drop-shadow(0 0 10px var(--color-secundario)); }
+            50% { transform: scale(1.06); filter: drop-shadow(0 0 12px var(--color-secundario)); }
             100% { transform: scale(1); }
         }
     </style>
@@ -735,28 +750,29 @@
             <!-- Chips de prueba rápida -->
             <div class="chips-container">
                 <span class="chip-label">Prueba Rápida:</span>
-                <button class="chip-btn" onclick="probarChip('while')">while</button>
-                <button class="chip-btn" onclick="probarChip('3.14159')">3.14159</button>
-                <button class="chip-btn" onclick="probarChip('@invalido')">@invalido</button>
-                <button class="chip-btn" onclick="probarChip('contador_2')">contador_2</button>
-                <button class="chip-btn" onclick="probarChip('&quot;Cyberpunk 2084&quot;')">"Cyberpunk 2084"</button>
-                <button class="chip-btn" onclick="probarChip('42')">42</button>
-                <button class="chip-btn" onclick="probarChip('>=')">&gt;=</button>
-                <button class="chip-btn" onclick="probarChip('+=')">+=</button>
-                <button class="chip-btn" onclick="probarChip('++')">++</button>
-                <button class="chip-btn" onclick="probarChip(';')">;</button>
-                <button class="chip-btn" onclick="probarChip('99error')">99error</button>
+                <button class="chip-btn" data-lexema="while">while</button>
+                <button class="chip-btn" data-lexema="3.14159">3.14159</button>
+                <button class="chip-btn" data-lexema="@invalido">@invalido</button>
+                <button class="chip-btn" data-lexema="contador_2">contador_2</button>
+                <button class="chip-btn" data-lexema='"Cyberpunk 2084"'>"Cyberpunk 2084"</button>
+                <button class="chip-btn" data-lexema="42">42</button>
+                <button class="chip-btn" data-lexema=">=">&gt;=</button>
+                <button class="chip-btn" data-lexema="+=">+=</button>
+                <button class="chip-btn" data-lexema="++">++</button>
+                <button class="chip-btn" data-lexema=";">;</button>
+                <button class="chip-btn" data-lexema="99error">99error</button>
+                <button class="chip-btn" data-lexema="$precio">$precio</button>
             </div>
 
             <!-- Tarjeta con el resultado dinámico -->
             <div id="tarjetaResultadoLexema" class="tarjeta-resultado-lexema">
                 <div class="tarjeta-resultado-grid">
                     <div>
-                        <div style="font-size: 0.8rem; color: #8e9db2; text-transform: uppercase; margin-bottom: 4px;">Lexema Evaluado:</div>
+                        <div class="res-sublabel">Lexema Evaluado:</div>
                         <div id="resLexemaTexto" class="resultado-lexema-val">while</div>
                     </div>
                     <div class="resultado-detalles">
-                        <div style="font-size: 0.8rem; color: #8e9db2; text-transform: uppercase;">Categoría Asignada:</div>
+                        <div class="res-sublabel">Categoría Asignada:</div>
                         <div id="resCategoriaBadge" class="resultado-cat-badge">Palabra Reservada</div>
                         <div id="resDescripcion" class="resultado-desc">Palabra clave reservada del lenguaje</div>
                     </div>
@@ -857,406 +873,236 @@
         </footer>
     </div>
 
-    <!-- SCRIPT DE LÓGICA LÉXICA CLIENT-SIDE (JAVASCRIPT) -->
+    <!-- ======================================================================= -->
+    <!-- MOTOR DEL ANALIZADOR LÉXICO CLIENT-SIDE EN JAVASCRIPT (100% ESTÁTICO)   -->
+    <!-- ======================================================================= -->
     <script>
-        // =====================================================================
-        // ESPECIFICACIÓN FORMAL DE REGLAS LÉXICAS Y PALETA VAPORWAVE
-        // =====================================================================
+        (function() {
+            "use strict";
 
-        const PALETA = {
-            RESERVADA:     "#7B2CBF", // Violeta Eléctrico
-            CADENA:        "#00F5D4", // Turquesa Neón
-            NUMERO:        "#F15BB5", // Fucsia Neón
-            ERROR:         "#FF0055", // Rojo Neón
-            IDENTIFICADOR: "#FFE600", // Amarillo Cyber
-            OP_ARITMETICO: "#00BBF9", // Azul Eléctrico
-            OP_COMPARACION:"#9B5DE5", // Púrpura Neón
-            OP_ASIGNACION: "#FEE440", // Oro Neón
-            DELIMITADOR:   "#A29BFE", // Lavanda Neón
-            COMENTARIO:    "#5C677D"  // Gris Neón Atenuado
-        };
+            // -----------------------------------------------------------------
+            // 1. PALETA DE COLORES Y METADATOS FORMALES
+            // -----------------------------------------------------------------
+            const PALETA = {
+                RESERVADA:      "#7B2CBF", // Violeta Eléctrico (Palabras Reservadas)
+                CADENA:         "#00F5D4", // Turquesa Neón (Cadenas / Strings)
+                NUMERO:         "#F15BB5", // Fucsia Neón (Números / Floats)
+                ERROR:          "#FF0055", // Rojo Neón (Errores Léxicos)
+                IDENTIFICADOR:  "#FFE600", // Amarillo Cyber (Identificadores)
+                OP_ARITMETICO:  "#00BBF9", // Azul Eléctrico (Operadores Aritméticos)
+                OP_COMPARACION: "#9B5DE5", // Púrpura Neón (Operadores de Comparación)
+                OP_ASIGNACION:  "#FEE440", // Oro Neón (Operadores de Asignación)
+                DELIMITADOR:    "#A29BFE", // Lavanda Neón (Delimitadores)
+                COMENTARIO:     "#5C677D"  // Gris Neón Atenuado (Comentarios)
+            };
 
-        const PALABRAS_RESERVADAS = new Set([
-            "if", "else", "while", "for", "do", "return", "int", "float",
-            "double", "char", "void", "bool", "string", "true", "false",
-            "break", "continue", "switch", "case", "default", "struct",
-            "class", "public", "private", "protected", "static", "const",
-            "main", "print", "println", "input", "import", "def", "null"
-        ]);
+            const PALABRAS_RESERVADAS = new Set([
+                "if", "else", "while", "for", "do", "return", "int", "float",
+                "double", "char", "void", "bool", "string", "true", "false",
+                "break", "continue", "switch", "case", "default", "struct",
+                "class", "public", "private", "protected", "static", "const",
+                "main", "print", "println", "input", "import", "def", "null"
+            ]);
 
-        // Reglas de evaluación para lexemas aislados
-        const REGLAS_LEXEMA_INDIVIDUAL = [
-            { cat: "Comentario",             regex: /^(\/\/.*|#.*|\/\*[\s\S]*\*\/)$/,               color: PALETA.COMENTARIO,     desc: "Comentario explicativo (línea o bloque)" },
-            { cat: "Cadena de Texto",        regex: /^("(?:\\.|[^"\\])*"|'(?:\\.|[^\'\\])*')$/,       color: PALETA.CADENA,         desc: "Literal de cadena delimitada por comillas" },
-            { cat: "Número Decimal",         regex: /^\d+\.\d+([eE][+-]?\d+)?$/,                    color: PALETA.NUMERO,         desc: "Número de punto flotante / decimal" },
-            { cat: "Número Entero",          regex: /^\d+$/,                                        color: PALETA.NUMERO,         desc: "Número entero sin signo" },
-            { cat: "Operador de Comparación", regex: /^(==|!=|<=|>=|<|>)$/,                          color: PALETA.OP_COMPARACION, desc: "Operador relacional de comparación" },
-            { cat: "Operador de Asignación",  regex: /^(\+=|-=|\*=|/=|%=|=)$/,                       color: PALETA.OP_ASIGNACION,  desc: "Operador de asignación (simple o compuesto)" },
-            { cat: "Operador Aritmético",    regex: /^(\+\+|--|\+|-|\*|\/|%)$/,                     color: PALETA.OP_ARITMETICO,  desc: "Operador aritmético binario o unario" },
-            { cat: "Delimitador",            regex: /^[;,\(\)\{\}\[\]:\.]$/,                        color: PALETA.DELIMITADOR,    desc: "Símbolo delimitador / separador sintáctico" },
-            { cat: "Identificador",          regex: /^[a-zA-Z_]\w*$/,                               color: PALETA.IDENTIFICADOR,  desc: "Identificador de variable o función" },
-        ];
+            // Reglas para clasificar un lexema individual aislado (ancladas con ^ y $)
+            const REGLAS_LEXEMA_INDIVIDUAL = [
+                { cat: "Comentario",             regex: /^(\/\/.*|#.*|\/\*[\s\S]*\*\/)$/,               color: PALETA.COMENTARIO,     desc: "Comentario explicativo (línea o bloque)" },
+                { cat: "Cadena de Texto",        regex: /^("(?:\\.|[^"\\])*"|'(?:\\.|[^\'\\])*')$/,       color: PALETA.CADENA,         desc: "Literal de cadena delimitada por comillas" },
+                { cat: "Número Decimal",         regex: /^\d+\.\d+([eE][+-]?\d+)?$/,                    color: PALETA.NUMERO,         desc: "Número de punto flotante / decimal" },
+                { cat: "Número Entero",          regex: /^\d+$/,                                        color: PALETA.NUMERO,         desc: "Número entero sin signo" },
+                { cat: "Operador de Comparación", regex: /^(==|!=|<=|>=|<|>)$/,                          color: PALETA.OP_COMPARACION, desc: "Operador relacional de comparación" },
+                { cat: "Operador de Asignación",  regex: /^(\+=|-=|\*=|/=|%=|=)$/,                       color: PALETA.OP_ASIGNACION,  desc: "Operador de asignación (simple o compuesto)" },
+                { cat: "Operador Aritmético",    regex: /^(\+\+|--|\+|-|\*|\/|%)$/,                     color: PALETA.OP_ARITMETICO,  desc: "Operador aritmético binario o unario" },
+                { cat: "Delimitador",            regex: /^[;,\(\)\{\}\[\]:\.]$/,                        color: PALETA.DELIMITADOR,    desc: "Símbolo delimitador / separador sintáctico" },
+                { cat: "Identificador",          regex: /^[a-zA-Z_]\w*$/,                               color: PALETA.IDENTIFICADOR,  desc: "Identificador de variable o función" },
+            ];
 
-        // Reglas ordenadas para el Tokenizador del flujo continuo de código
-        const REGLAS_SCANNER = [
-            { tipo: "COMENTARIO",             regex: /^(\/\*[\s\S]*?\*\/|\/\/[^\n]*|#[^\n]*)/, cat: "Comentario",                    color: PALETA.COMENTARIO,     desc: "Comentario explicativo (ignorado)" },
-            { tipo: "CADENA",                 regex: /^("(?:\\.|[^"\\])*"|'(?:\\.|[^\'\\])*')/,  cat: "Cadena de Texto",               color: PALETA.CADENA,         desc: "Literal de cadena entre comillas" },
-            { tipo: "CADENA_SIN_CERRAR",      regex: /^("(?:\\.|[^"\\\n])*|'(?:\\.|[^\'\\\n])*)/,cat: "Error Léxico / No Reconocido",   color: PALETA.ERROR,          desc: "Error léxico: Cadena abierta sin comilla de cierre" },
-            { tipo: "NUMERO_DECIMAL",         regex: /^\d+\.\d+([eE][+-]?\d+)?\b/,              cat: "Número Decimal",                color: PALETA.NUMERO,         desc: "Constante numérica de punto flotante" },
-            { tipo: "IDENTIFICADOR_INVALIDO", regex: /^\d+[a-zA-Z_]\w*\b/,                      cat: "Error Léxico / No Reconocido",   color: PALETA.ERROR,          desc: "Error léxico: Identificador inválido (inicia con dígito)" },
-            { tipo: "NUMERO_ENTERO",          regex: /^\d+\b/,                                  cat: "Número Entero",                 color: PALETA.NUMERO,         desc: "Constante numérica entera" },
-            { tipo: "OP_COMPARACION",         regex: /^(==|!=|<=|>=|<|>)/,                      cat: "Operador de Comparación",       color: PALETA.OP_COMPARACION, desc: "Operador relacional de comparación" },
-            { tipo: "OP_ASIGNACION",          regex: /^(\+=|-=|\*=|/=|%=|=)/,                   cat: "Operador de Asignación",        color: PALETA.OP_ASIGNACION,  desc: "Operador de asignación" },
-            { tipo: "OP_ARITMETICO",          regex: /^(\+\+|--|\+|-|\*|\/|%)/,                 cat: "Operador Aritmético",           color: PALETA.OP_ARITMETICO,  desc: "Operador aritmético" },
-            { tipo: "DELIMITADOR",            regex: /^[;,\(\)\{\}\[\]:\.]/,                   cat: "Delimitador",                   color: PALETA.DELIMITADOR,    desc: "Delimitador sintáctico" },
-            { tipo: "IDENTIFICADOR",          regex: /^[a-zA-Z_]\w*\b/,                         cat: "Identificador",                 color: PALETA.IDENTIFICADOR,  desc: "Identificador de usuario" },
-        ];
+            // Reglas ordenadas para el Scanner de flujo continuo (Tokenizador)
+            const REGLAS_SCANNER = [
+                { tipo: "COMENTARIO",             regex: /^(\/\*[\s\S]*?\*\/|\/\/[^\n]*|#[^\n]*)/, cat: "Comentario",                    color: PALETA.COMENTARIO,     desc: "Comentario explicativo (ignorado)" },
+                { tipo: "CADENA",                 regex: /^("(?:\\.|[^"\\])*"|'(?:\\.|[^\'\\])*')/,  cat: "Cadena de Texto",               color: PALETA.CADENA,         desc: "Literal de cadena entre comillas" },
+                { tipo: "CADENA_SIN_CERRAR",      regex: /^("(?:\\.|[^"\\\n])*|'(?:\\.|[^\'\\\n])*)/,cat: "Error Léxico / No Reconocido",   color: PALETA.ERROR,          desc: "Error léxico: Cadena abierta sin comilla de cierre en la línea" },
+                { tipo: "NUMERO_DECIMAL",         regex: /^\d+\.\d+([eE][+-]?\d+)?\b/,              cat: "Número Decimal",                color: PALETA.NUMERO,         desc: "Constante numérica de punto flotante" },
+                { tipo: "IDENTIFICADOR_INVALIDO", regex: /^\d+[a-zA-Z_]\w*\b/,                      cat: "Error Léxico / No Reconocido",   color: PALETA.ERROR,          desc: "Error léxico: Identificador inválido (no puede iniciar con dígito)" },
+                { tipo: "NUMERO_ENTERO",          regex: /^\d+\b/,                                  cat: "Número Entero",                 color: PALETA.NUMERO,         desc: "Constante numérica entera" },
+                { tipo: "OP_COMPARACION",         regex: /^(==|!=|<=|>=|<|>)/,                      cat: "Operador de Comparación",       color: PALETA.OP_COMPARACION, desc: "Operador relacional de comparación" },
+                { tipo: "OP_ASIGNACION",          regex: /^(\+=|-=|\*=|/=|%=|=)/,                   cat: "Operador de Asignación",        color: PALETA.OP_ASIGNACION,  desc: "Operador de asignación" },
+                { tipo: "OP_ARITMETICO",          regex: /^(\+\+|--|\+|-|\*|\/|%)/,                 cat: "Operador Aritmético",           color: PALETA.OP_ARITMETICO,  desc: "Operador aritmético" },
+                { tipo: "DELIMITADOR",            regex: /^[;,\(\)\{\}\[\]:\.]/,                   cat: "Delimitador",                   color: PALETA.DELIMITADOR,    desc: "Delimitador sintáctico" },
+                { tipo: "IDENTIFICADOR",          regex: /^[a-zA-Z_]\w*\b/,                         cat: "Identificador",                 color: PALETA.IDENTIFICADOR,  desc: "Identificador de usuario" },
+            ];
 
-        // =====================================================================
-        // FUNCIÓN 1: CLASIFICADOR DE LEXEMA INDIVIDUAL
-        // =====================================================================
+            // -----------------------------------------------------------------
+            // 2. FUNCIÓN DE CLASIFICACIÓN DE LEXEMA INDIVIDUAL
+            // -----------------------------------------------------------------
+            function clasificarLexema(lexemaRaw) {
+                const lexema = (lexemaRaw || "").trim();
 
-        function clasificarLexema(lexemaRaw) {
-            const lexema = (lexemaRaw || "").trim();
+                if (!lexema) {
+                    return {
+                        categoria: "Error Léxico / No Reconocido",
+                        lexema: lexemaRaw || "(vacío)",
+                        color: PALETA.ERROR,
+                        esValido: false,
+                        descripcion: "Lexema vacío o compuesto solo por espacios en blanco"
+                    };
+                }
 
-            if (!lexema) {
+                for (const regla of REGLAS_LEXEMA_INDIVIDUAL) {
+                    if (regla.regex.test(lexema)) {
+                        if (regla.cat === "Identificador") {
+                            if (PALABRAS_RESERVADAS.has(lexema)) {
+                                return {
+                                    categoria: "Palabra Reservada",
+                                    lexema: lexema,
+                                    color: PALETA.RESERVADA,
+                                    esValido: true,
+                                    descripcion: `Palabra clave reservada del lenguaje (${lexema})`
+                                };
+                            } else {
+                                return {
+                                    categoria: "Identificador",
+                                    lexema: lexema,
+                                    color: PALETA.IDENTIFICADOR,
+                                    esValido: true,
+                                    descripcion: `Identificador válido de variable o función (${lexema})`
+                                };
+                            }
+                        }
+
+                        return {
+                            categoria: regla.cat,
+                            lexema: lexema,
+                            color: regla.color,
+                            esValido: true,
+                            descripcion: regla.desc
+                        };
+                    }
+                }
+
                 return {
                     categoria: "Error Léxico / No Reconocido",
-                    lexema: lexemaRaw,
+                    lexema: lexema,
                     color: PALETA.ERROR,
                     esValido: false,
-                    descripcion: "Lexema vacío o compuesto solo por espacios en blanco"
+                    descripcion: `Error léxico: El patrón '${lexema}' no pertenece al alfabeto ni a la sintaxis del lenguaje`
                 };
             }
 
-            for (const regla of REGLAS_LEXEMA_INDIVIDUAL) {
-                if (regla.regex.test(lexema)) {
-                    if (regla.cat === "Identificador") {
-                        if (PALABRAS_RESERVADAS.has(lexema)) {
-                            return {
-                                categoria: "Palabra Reservada",
-                                lexema: lexema,
-                                color: PALETA.RESERVADA,
-                                esValido: true,
-                                descripcion: `Palabra clave reservada del lenguaje (${lexema})`
-                            };
-                        } else {
-                            return {
-                                categoria: "Identificador",
-                                lexema: lexema,
-                                color: PALETA.IDENTIFICADOR,
-                                esValido: true,
-                                descripcion: `Identificador válido de variable o función (${lexema})`
-                            };
-                        }
+            // -----------------------------------------------------------------
+            // 3. FUNCIÓN DE TOKENIZACIÓN DE FLUJO CONTINUO (SCANNER DFA O(N))
+            // -----------------------------------------------------------------
+            function analizarCodigoCompleto(codigoFuente) {
+                const tokens = [];
+                let linea = 1;
+                let columna = 1;
+                let cursor = 0;
+                const len = codigoFuente.length;
+
+                while (cursor < len) {
+                    const sub = codigoFuente.slice(cursor);
+
+                    // 1. Saltos de línea
+                    if (sub.startsWith("\n")) {
+                        linea++;
+                        columna = 1;
+                        cursor++;
+                        continue;
                     }
 
-                    return {
-                        categoria: regla.cat,
-                        lexema: lexema,
-                        color: regla.color,
-                        esValido: true,
-                        descripcion: regla.desc
-                    };
-                }
-            }
+                    // 2. Retornos de carro
+                    if (sub.startsWith("\r")) {
+                        cursor++;
+                        continue;
+                    }
 
-            return {
-                categoria: "Error Léxico / No Reconocido",
-                lexema: lexema,
-                color: PALETA.ERROR,
-                esValido: false,
-                descripcion: `Error léxico: El patrón '${lexema}' no pertenece al alfabeto ni a la sintaxis del lenguaje`
-            };
-        }
+                    // 3. Espacios en blanco y tabulaciones
+                    const matchEspacio = sub.match(/^[^\S\r\n]+/);
+                    if (matchEspacio) {
+                        const espLen = matchEspacio[0].length;
+                        columna += espLen;
+                        cursor += espLen;
+                        continue;
+                    }
 
-        // =====================================================================
-        // FUNCIÓN 2: TOKENIZADOR DE FLUJO CONTINUO DE CÓDIGO
-        // =====================================================================
+                    // 4. Búsqueda de patrones en orden de precedencia
+                    let coincidio = false;
 
-        function analizarCodigoCompleto(codigoFuente) {
-            const tokens = [];
-            let linea = 1;
-            let columna = 1;
-            let cursor = 0;
-            const len = codigoFuente.length;
+                    for (const r of REGLAS_SCANNER) {
+                        const match = sub.match(r.regex);
+                        if (match && match.index === 0) {
+                            const lexema = match[0];
+                            const matchLen = lexema.length;
+                            let cat = r.cat;
+                            let color = r.color;
+                            let desc = r.desc;
+                            let esError = (r.cat === "Error Léxico / No Reconocido");
 
-            while (cursor < len) {
-                const sub = codigoFuente.slice(cursor);
-
-                // 1. Manejo de saltos de línea
-                if (sub.startsWith("\n")) {
-                    linea++;
-                    columna = 1;
-                    cursor++;
-                    continue;
-                }
-
-                // 2. Manejo de retornos de carro (\r\n)
-                if (sub.startsWith("\r")) {
-                    cursor++;
-                    continue;
-                }
-
-                // 3. Manejo de espacios y tabulaciones
-                const matchEspacio = sub.match(/^[^\S\r\n]+/);
-                if (matchEspacio) {
-                    const espLen = matchEspacio[0].length;
-                    columna += espLen;
-                    cursor += espLen;
-                    continue;
-                }
-
-                // 4. Intentar emparejar con las reglas del scanner
-                let coincidio = false;
-
-                for (const r of REGLAS_SCANNER) {
-                    const match = sub.match(r.regex);
-                    if (match && match.index === 0) {
-                        const lexema = match[0];
-                        const matchLen = lexema.length;
-                        let cat = r.cat;
-                        let color = r.color;
-                        let desc = r.desc;
-                        let esError = (r.cat === "Error Léxico / No Reconocido");
-
-                        if (r.tipo === "IDENTIFICADOR") {
-                            if (PALABRAS_RESERVADAS.has(lexema)) {
-                                cat = "Palabra Reservada";
-                                color = PALETA.RESERVADA;
-                                desc = `Palabra clave reservada del lenguaje (${lexema})`;
+                            if (r.tipo === "IDENTIFICADOR") {
+                                if (PALABRAS_RESERVADAS.has(lexema)) {
+                                    cat = "Palabra Reservada";
+                                    color = PALETA.RESERVADA;
+                                    desc = `Palabra clave reservada del lenguaje (${lexema})`;
+                                }
                             }
-                        }
 
-                        tokens.push({
-                            categoria: cat,
-                            lexema: lexema,
-                            linea: linea,
-                            columna: columna,
-                            color: color,
-                            descripcion: desc,
-                            esError: esError
-                        });
+                            tokens.push({
+                                categoria: cat,
+                                lexema: lexema,
+                                linea: linea,
+                                columna: columna,
+                                color: color,
+                                descripcion: desc,
+                                esError: esError
+                            });
 
-                        // Si es comentario, ajustar línea y columna según posibles saltos internos
-                        if (r.tipo === "COMENTARIO") {
-                            const saltos = (lexema.match(/\n/g) || []).length;
-                            if (saltos > 0) {
-                                linea += saltos;
-                                const ultimoSalto = lexema.lastIndexOf("\n");
-                                columna = lexema.length - ultimoSalto;
+                            // Ajuste de línea y columna si es comentario multilínea
+                            if (r.tipo === "COMENTARIO") {
+                                const saltos = (lexema.match(/\n/g) || []).length;
+                                if (saltos > 0) {
+                                    linea += saltos;
+                                    const ultimoSalto = lexema.lastIndexOf("\n");
+                                    columna = lexema.length - ultimoSalto;
+                                } else {
+                                    columna += matchLen;
+                                }
                             } else {
                                 columna += matchLen;
                             }
-                        } else {
-                            columna += matchLen;
-                        }
 
-                        cursor += matchLen;
-                        coincidio = true;
-                        break;
+                            cursor += matchLen;
+                            coincidio = true;
+                            break;
+                        }
+                    }
+
+                    // 5. Carácter individual no reconocido -> Error Léxico
+                    if (!coincidio) {
+                        const charInvalido = sub[0];
+                        tokens.push({
+                            categoria: "Error Léxico / No Reconocido",
+                            lexema: charInvalido,
+                            linea: linea,
+                            columna: columna,
+                            color: PALETA.ERROR,
+                            descripcion: `Error léxico: Carácter no permitido '${charInvalido}' (ASCII: ${charInvalido.charCodeAt(0)})`,
+                            esError: true
+                        });
+                        columna++;
+                        cursor++;
                     }
                 }
 
-                // 5. Carácter no reconocido -> Error Léxico de 1 carácter
-                if (!coincidio) {
-                    const charInvalido = sub[0];
-                    tokens.push({
-                        categoria: "Error Léxico / No Reconocido",
-                        lexema: charInvalido,
-                        linea: linea,
-                        columna: columna,
-                        color: PALETA.ERROR,
-                        descripcion: `Error léxico: Carácter no permitido '${charInvalido}' (ASCII: ${charInvalido.charCodeAt(0)})`,
-                        esError: true
-                    });
-                    columna++;
-                    cursor++;
-                }
+                return tokens;
             }
 
-            return tokens;
-        }
-
-        // =====================================================================
-        // MANIPULACIÓN DEL DOM E INTERFAZ DINÁMICA
-        // =====================================================================
-
-        let tokensActuales = [];
-
-        // Elementos del DOM
-        const inputLexema = document.getElementById("inputLexema");
-        const btnClasificarLexema = document.getElementById("btnClasificarLexema");
-        const tarjetaResultadoLexema = document.getElementById("tarjetaResultadoLexema");
-        const resLexemaTexto = document.getElementById("resLexemaTexto");
-        const resCategoriaBadge = document.getElementById("resCategoriaBadge");
-        const resDescripcion = document.getElementById("resDescripcion");
-        const resEstadoBadge = document.getElementById("resEstadoBadge");
-
-        const editorCodigo = document.getElementById("editorCodigo");
-        const btnAnalizarCodigo = document.getElementById("btnAnalizarCodigo");
-        const btnEjemploCompleto = document.getElementById("btnEjemploCompleto");
-        const btnEjemploErrores = document.getElementById("btnEjemploErrores");
-        const btnLimpiar = document.getElementById("btnLimpiar");
-        const editorInfoLineas = document.getElementById("editorInfoLineas");
-
-        const tablaTokensBody = document.getElementById("tablaTokensBody");
-        const filtroCategoria = document.getElementById("filtroCategoria");
-        const conteoTokensBadge = document.getElementById("conteoTokensBadge");
-
-        const statTotal = document.getElementById("statTotal");
-        const statValidos = document.getElementById("statValidos");
-        const statErrores = document.getElementById("statErrores");
-        const statPrecision = document.getElementById("statPrecision");
-
-        // Evento 1: Evaluar Lexema Único
-        function ejecutarEvaluacionLexema() {
-            const valor = inputLexema.value;
-            if (!valor.trim()) {
-                inputLexema.focus();
-                return;
-            }
-
-            const res = clasificarLexema(valor);
-
-            resLexemaTexto.textContent = res.lexema;
-            resLexemaTexto.style.borderLeftColor = res.color;
-            resCategoriaBadge.textContent = res.categoria;
-            resCategoriaBadge.style.color = res.color;
-            resCategoriaBadge.style.textShadow = `0 0 10px ${res.color}66`;
-            resDescripcion.textContent = res.descripcion;
-
-            if (res.esValido) {
-                resEstadoBadge.textContent = "✓ VÁLIDO";
-                resEstadoBadge.className = "resultado-estado-badge estado-valido";
-            } else {
-                resEstadoBadge.textContent = "✗ ERROR LÉXICO";
-                resEstadoBadge.className = "resultado-estado-badge estado-error";
-            }
-
-            tarjetaResultadoLexema.style.display = "block";
-            tarjetaResultadoLexema.classList.remove("pulse-update");
-            void tarjetaResultadoLexema.offsetWidth; // Forzar reflow
-            tarjetaResultadoLexema.classList.add("pulse-update");
-        }
-
-        btnClasificarLexema.addEventListener("click", ejecutarEvaluacionLexema);
-        inputLexema.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                ejecutarEvaluacionLexema();
-            }
-        });
-
-        window.probarChip = function(texto) {
-            inputLexema.value = texto;
-            ejecutarEvaluacionLexema();
-        };
-
-        // Evento 2: Analizar Código Completo y Actualizar Métricas & Tabla
-        function renderizarTabla(tokens) {
-            const filtro = filtroCategoria.value;
-            const filtrados = (filtro === "TODAS") 
-                ? tokens 
-                : tokens.filter(t => t.categoria === filtro);
-
-            conteoTokensBadge.textContent = `Mostrando: ${filtrados.length} de ${tokens.length} tokens`;
-
-            if (filtrados.length === 0) {
-                tablaTokensBody.innerHTML = `
-                    <tr>
-                        <td colspan="5" style="text-align: center; padding: 25px; color: #8899aa;">
-                            No se encontraron tokens que coincidan con el filtro seleccionado.
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-
-            let html = "";
-            filtrados.forEach((t, index) => {
-                const claseFila = t.esError ? "fila-error" : "";
-                const lexemaEscapado = escapeHtml(t.lexema);
-                const descEscapada = escapeHtml(t.descripcion);
-                const pos = `L${String(t.linea).padStart(2, '0')}:C${String(t.columna).padStart(2, '0')}`;
-
-                html += `
-                    <tr class="${claseFila}">
-                        <td style="text-align: center; color: #718096; font-family: 'Fira Code', monospace;">${index + 1}</td>
-                        <td style="text-align: center;"><span class="badge-pos">${pos}</span></td>
-                        <td>
-                            <span class="badge-cat" style="border-color: ${t.color}; color: ${t.color}; box-shadow: 0 0 8px ${t.color}44;">
-                                ${escapeHtml(t.categoria)}
-                            </span>
-                        </td>
-                        <td>
-                            <code class="lexema-code" style="color: ${t.color};">${lexemaEscapado}</code>
-                        </td>
-                        <td class="desc-cell">${descEscapada}</td>
-                    </tr>
-                `;
-            });
-
-            tablaTokensBody.innerHTML = html;
-        }
-
-        function actualizarMetricas(tokens) {
-            const total = tokens.length;
-            const errores = tokens.filter(t => t.esError).length;
-            const validos = total - errores;
-            const tasa = total > 0 ? ((validos / total) * 100).toFixed(2) : "100.00";
-
-            statTotal.textContent = total;
-            statValidos.textContent = validos;
-            statErrores.textContent = errores;
-            statPrecision.textContent = `${tasa}%`;
-
-            // Animación de pulso visual
-            [statTotal, statValidos, statErrores, statPrecision].forEach(el => {
-                el.classList.remove("pulse-update");
-                void el.offsetWidth;
-                el.classList.add("pulse-update");
-            });
-        }
-
-        function ejecutarAnalisisCompleto() {
-            const codigo = editorCodigo.value;
-            tokensActuales = analizarCodigoCompleto(codigo);
-            actualizarMetricas(tokensActuales);
-            renderizarTabla(tokensActuales);
-            actualizarContadorLineas();
-        }
-
-        function actualizarContadorLineas() {
-            const texto = editorCodigo.value;
-            const lineas = texto ? texto.split("\n").length : 0;
-            const caracteres = texto.length;
-            editorInfoLineas.textContent = `Líneas: ${lineas} | Caracteres: ${caracteres}`;
-        }
-
-        // Atajos y eventos del editor
-        btnAnalizarCodigo.addEventListener("click", ejecutarAnalisisCompleto);
-        filtroCategoria.addEventListener("change", () => renderizarTabla(tokensActuales));
-        editorCodigo.addEventListener("input", actualizarContadorLineas);
-
-        // Permitir tabulador dentro del textarea y Ctrl+Enter para analizar
-        editorCodigo.addEventListener("keydown", (e) => {
-            if (e.key === "Tab") {
-                e.preventDefault();
-                const start = editorCodigo.selectionStart;
-                const end = editorCodigo.selectionEnd;
-                editorCodigo.value = editorCodigo.value.substring(0, start) + "    " + editorCodigo.value.substring(end);
-                editorCodigo.selectionStart = editorCodigo.selectionEnd = start + 4;
-                actualizarContadorLineas();
-            } else if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
-                e.preventDefault();
-                ejecutarAnalisisCompleto();
-            }
-        });
-
-        // Cargar ejemplos predefinidos
-        const EJEMPLO_COMPLETO = `// *******************************************************************************
+            // -----------------------------------------------------------------
+            // 4. CÓDIGOS FUENTE PREDEFINIDOS PARA PRESETS
+            // -----------------------------------------------------------------
+            const EJEMPLO_COMPLETO = `// *******************************************************************************
 // * SYNTH-LEX: Demostración Completa de las 10 Categorías de Tokens
 // * Alumno: Fernando Vidal Delgado | Control: 2320905
+// * Materia: Lenguajes y Autómatas / Compiladores
 // *******************************************************************************
 
 int main() {
@@ -1284,52 +1130,306 @@ int main() {
     return 0;
 }`;
 
-        const EJEMPLO_ERRORES = `// Demostración de Detección de Errores Léxicos
-int 99identificador_invalido = 50;  // Identificador no puede empezar con dígito
-@simbolo_no_permitido;             // Símbolo '@' no perteneciente al alfabeto
-$saldo_cuenta = 1500;              // Símbolo '$' no reconocido
+            const EJEMPLO_ERRORES = `// *******************************************************************************
+// * SYNTH-LEX: Demostración de Detección Formal de Errores Léxicos
+// * Alumno: Fernando Vidal Delgado | Control: 2320905
+// *******************************************************************************
+
+int 99identificador_invalido = 50;  // Error: Identificador no puede empezar con dígito
+@simbolo_no_permitido;             // Error: Carácter '@' no pertenece al alfabeto
+$saldo_cuenta = 1500;              // Error: Símbolo '$' no reconocido
 string sin_cerrar = "Esta cadena no tiene comilla de cierre;
 float decimal_valido = 45.678;
 ~tilde_invalida;
 return 0;`;
 
-        btnEjemploCompleto.addEventListener("click", () => {
-            editorCodigo.value = EJEMPLO_COMPLETO;
-            ejecutarAnalisisCompleto();
-        });
+            // -----------------------------------------------------------------
+            // 5. INICIALIZACIÓN Y ENLACE DE EVENTOS DEL DOM
+            // -----------------------------------------------------------------
+            function iniciarApp() {
+                // Referencias a elementos
+                const inputLexema = document.getElementById("inputLexema");
+                const btnClasificarLexema = document.getElementById("btnClasificarLexema");
+                const tarjetaResultadoLexema = document.getElementById("tarjetaResultadoLexema");
+                const resLexemaTexto = document.getElementById("resLexemaTexto");
+                const resCategoriaBadge = document.getElementById("resCategoriaBadge");
+                const resDescripcion = document.getElementById("resDescripcion");
+                const resEstadoBadge = document.getElementById("resEstadoBadge");
 
-        btnEjemploErrores.addEventListener("click", () => {
-            editorCodigo.value = EJEMPLO_ERRORES;
-            ejecutarAnalisisCompleto();
-        });
+                const editorCodigo = document.getElementById("editorCodigo");
+                const btnAnalizarCodigo = document.getElementById("btnAnalizarCodigo");
+                const btnEjemploCompleto = document.getElementById("btnEjemploCompleto");
+                const btnEjemploErrores = document.getElementById("btnEjemploErrores");
+                const btnLimpiar = document.getElementById("btnLimpiar");
+                const editorInfoLineas = document.getElementById("editorInfoLineas");
 
-        btnLimpiar.addEventListener("click", () => {
-            editorCodigo.value = "";
-            tokensActuales = [];
-            actualizarMetricas([]);
-            renderizarTabla([]);
-            actualizarContadorLineas();
-            editorCodigo.focus();
-        });
+                const tablaTokensBody = document.getElementById("tablaTokensBody");
+                const filtroCategoria = document.getElementById("filtroCategoria");
+                const conteoTokensBadge = document.getElementById("conteoTokensBadge");
 
-        function escapeHtml(str) {
-            return (str || "")
-                .replace(/&/g, "&amp;")
-                .replace(/</g, "&lt;")
-                .replace(/>/g, "&gt;")
-                .replace(/"/g, "&quot;")
-                .replace(/'/g, "&#039;");
-        }
+                const statTotal = document.getElementById("statTotal");
+                const statValidos = document.getElementById("statValidos");
+                const statErrores = document.getElementById("statErrores");
+                const statPrecision = document.getElementById("statPrecision");
 
-        // Carga inicial al abrir la página
-        window.addEventListener("DOMContentLoaded", () => {
-            editorCodigo.value = EJEMPLO_COMPLETO;
-            ejecutarAnalisisCompleto();
+                let tokensActuales = [];
 
-            // Evaluar un lexema inicial demostrativo
-            inputLexema.value = "while";
-            ejecutarEvaluacionLexema();
-        });
+                // -------------------------------------------------------------
+                // LÓGICA DE EVALUACIÓN DE LEXEMA ÚNICO
+                // -------------------------------------------------------------
+                function procesarEvaluacionLexema() {
+                    const texto = inputLexema.value;
+                    if (!texto || !texto.trim()) {
+                        inputLexema.focus();
+                        return;
+                    }
+
+                    const res = clasificarLexema(texto);
+
+                    resLexemaTexto.textContent = res.lexema;
+                    resLexemaTexto.style.borderLeftColor = res.color;
+                    resCategoriaBadge.textContent = res.categoria;
+                    resCategoriaBadge.style.color = res.color;
+                    resCategoriaBadge.style.textShadow = `0 0 10px ${res.color}66`;
+                    resDescripcion.textContent = res.descripcion;
+
+                    if (res.esValido) {
+                        resEstadoBadge.textContent = "✓ VÁLIDO";
+                        resEstadoBadge.className = "resultado-estado-badge estado-valido";
+                    } else {
+                        resEstadoBadge.textContent = "✗ ERROR LÉXICO";
+                        resEstadoBadge.className = "resultado-estado-badge estado-error";
+                    }
+
+                    tarjetaResultadoLexema.style.display = "block";
+                    tarjetaResultadoLexema.classList.remove("pulse-update");
+                    void tarjetaResultadoLexema.offsetWidth; // Forzar reflow
+                    tarjetaResultadoLexema.classList.add("pulse-update");
+                }
+
+                // Event Listeners: Botón e Input (Enter)
+                if (btnClasificarLexema) {
+                    btnClasificarLexema.addEventListener("click", procesarEvaluacionLexema);
+                }
+
+                if (inputLexema) {
+                    inputLexema.addEventListener("keydown", function(e) {
+                        if (e.key === "Enter") {
+                            e.preventDefault();
+                            procesarEvaluacionLexema();
+                        }
+                    });
+                    inputLexema.addEventListener("keypress", function(e) {
+                        if (e.key === "Enter" || e.keyCode === 13) {
+                            e.preventDefault();
+                            procesarEvaluacionLexema();
+                        }
+                    });
+                }
+
+                // Event Listeners en Chips de Prueba Rápida
+                const chips = document.querySelectorAll(".chip-btn");
+                chips.forEach(function(chip) {
+                    chip.addEventListener("click", function() {
+                        const valor = this.getAttribute("data-lexema") || this.textContent.trim();
+                        if (inputLexema) {
+                            inputLexema.value = valor;
+                            procesarEvaluacionLexema();
+                        }
+                    });
+                });
+
+                // Función global de respaldo para chips
+                window.probarChip = function(valor) {
+                    if (inputLexema) {
+                        inputLexema.value = valor;
+                        procesarEvaluacionLexema();
+                    }
+                };
+
+                // -------------------------------------------------------------
+                // LÓGICA DE ANÁLISIS DE CÓDIGO COMPLETO Y TABLA
+                // -------------------------------------------------------------
+                function renderizarTabla(tokens) {
+                    if (!tablaTokensBody) return;
+
+                    const filtro = filtroCategoria ? filtroCategoria.value : "TODAS";
+                    const filtrados = (filtro === "TODAS")
+                        ? tokens
+                        : tokens.filter(function(t) { return t.categoria === filtro; });
+
+                    if (conteoTokensBadge) {
+                        conteoTokensBadge.textContent = `Mostrando: ${filtrados.length} de ${tokens.length} tokens`;
+                    }
+
+                    if (filtrados.length === 0) {
+                        tablaTokensBody.innerHTML = `
+                            <tr>
+                                <td colspan="5" style="text-align: center; padding: 25px; color: #8899aa;">
+                                    No se encontraron tokens que coincidan con el filtro seleccionado.
+                                </td>
+                            </tr>
+                        `;
+                        return;
+                    }
+
+                    let html = "";
+                    filtrados.forEach(function(t, index) {
+                        const claseFila = t.esError ? "fila-error" : "";
+                        const lexemaEscapado = escapeHtml(t.lexema);
+                        const descEscapada = escapeHtml(t.descripcion);
+                        const pos = `L${String(t.linea).padStart(2, '0')}:C${String(t.columna).padStart(2, '0')}`;
+
+                        html += `
+                            <tr class="${claseFila}">
+                                <td style="text-align: center; color: #718096; font-family: 'Fira Code', monospace;">${index + 1}</td>
+                                <td style="text-align: center;"><span class="badge-pos">${pos}</span></td>
+                                <td>
+                                    <span class="badge-cat" style="border-color: ${t.color}; color: ${t.color}; box-shadow: 0 0 8px ${t.color}44;">
+                                        ${escapeHtml(t.categoria)}
+                                    </span>
+                                </td>
+                                <td>
+                                    <code class="lexema-code" style="color: ${t.color};">${lexemaEscapado}</code>
+                                </td>
+                                <td class="desc-cell">${descEscapada}</td>
+                            </tr>
+                        `;
+                    });
+
+                    tablaTokensBody.innerHTML = html;
+                }
+
+                function actualizarMetricas(tokens) {
+                    const total = tokens.length;
+                    const errores = tokens.filter(function(t) { return t.esError; }).length;
+                    const validos = total - errores;
+                    const tasa = total > 0 ? ((validos / total) * 100).toFixed(2) : "100.00";
+
+                    if (statTotal) statTotal.textContent = total;
+                    if (statValidos) statValidos.textContent = validos;
+                    if (statErrores) statErrores.textContent = errores;
+                    if (statPrecision) statPrecision.textContent = `${tasa}%`;
+
+                    // Pulso visual en tarjetas de métricas
+                    [statTotal, statValidos, statErrores, statPrecision].forEach(function(el) {
+                        if (el) {
+                            el.classList.remove("pulse-update");
+                            void el.offsetWidth;
+                            el.classList.add("pulse-update");
+                        }
+                    });
+                }
+
+                function ejecutarAnalisisCompleto() {
+                    if (!editorCodigo) return;
+                    const codigo = editorCodigo.value;
+                    tokensActuales = analizarCodigoCompleto(codigo);
+                    actualizarMetricas(tokensActuales);
+                    renderizarTabla(tokensActuales);
+                    actualizarContadorLineas();
+                }
+
+                function actualizarContadorLineas() {
+                    if (!editorCodigo || !editorInfoLineas) return;
+                    const texto = editorCodigo.value;
+                    const lineas = texto ? texto.split("\n").length : 0;
+                    const caracteres = texto.length;
+                    editorInfoLineas.textContent = `Líneas: ${lineas} | Caracteres: ${caracteres}`;
+                }
+
+                // Event Listeners: Botón Analizar, Filtro e Input
+                if (btnAnalizarCodigo) {
+                    btnAnalizarCodigo.addEventListener("click", ejecutarAnalisisCompleto);
+                }
+
+                if (filtroCategoria) {
+                    filtroCategoria.addEventListener("change", function() {
+                        renderizarTabla(tokensActuales);
+                    });
+                }
+
+                if (editorCodigo) {
+                    editorCodigo.addEventListener("input", actualizarContadorLineas);
+
+                    // Atajos de teclado: Tab (sangría) y Ctrl+Enter / Cmd+Enter (analizar)
+                    editorCodigo.addEventListener("keydown", function(e) {
+                        if (e.key === "Tab") {
+                            e.preventDefault();
+                            const start = this.selectionStart;
+                            const end = this.selectionEnd;
+                            this.value = this.value.substring(0, start) + "    " + this.value.substring(end);
+                            this.selectionStart = this.selectionEnd = start + 4;
+                            actualizarContadorLineas();
+                        } else if (e.key === "Enter" && (e.ctrlKey || e.metaKey)) {
+                            e.preventDefault();
+                            ejecutarAnalisisCompleto();
+                        }
+                    });
+                }
+
+                // -------------------------------------------------------------
+                // PRESETS: BOTONES DE EJEMPLO
+                // -------------------------------------------------------------
+                if (btnEjemploCompleto) {
+                    btnEjemploCompleto.addEventListener("click", function() {
+                        if (editorCodigo) {
+                            editorCodigo.value = EJEMPLO_COMPLETO;
+                            ejecutarAnalisisCompleto();
+                        }
+                    });
+                }
+
+                if (btnEjemploErrores) {
+                    btnEjemploErrores.addEventListener("click", function() {
+                        if (editorCodigo) {
+                            editorCodigo.value = EJEMPLO_ERRORES;
+                            ejecutarAnalisisCompleto();
+                        }
+                    });
+                }
+
+                if (btnLimpiar) {
+                    btnLimpiar.addEventListener("click", function() {
+                        if (editorCodigo) editorCodigo.value = "";
+                        tokensActuales = [];
+                        actualizarMetricas([]);
+                        renderizarTabla([]);
+                        actualizarContadorLineas();
+                        if (editorCodigo) editorCodigo.focus();
+                    });
+                }
+
+                function escapeHtml(str) {
+                    return (str || "")
+                        .replace(/&/g, "&amp;")
+                        .replace(/</g, "&lt;")
+                        .replace(/>/g, "&gt;")
+                        .replace(/"/g, "&quot;")
+                        .replace(/'/g, "&#039;");
+                }
+
+                // -------------------------------------------------------------
+                // CARGA INICIAL POR DEFECTO
+                // -------------------------------------------------------------
+                if (editorCodigo) {
+                    editorCodigo.value = EJEMPLO_COMPLETO;
+                    ejecutarAnalisisCompleto();
+                }
+
+                if (inputLexema) {
+                    inputLexema.value = "while";
+                    procesarEvaluacionLexema();
+                }
+            }
+
+            // Ejecutar cuando el DOM esté listo
+            if (document.readyState === "loading") {
+                document.addEventListener("DOMContentLoaded", iniciarApp);
+            } else {
+                iniciarApp();
+            }
+        })();
     </script>
 </body>
 </html>
