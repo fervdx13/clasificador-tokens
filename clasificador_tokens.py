@@ -76,6 +76,7 @@ class PaletaVaporwave:
     TOKEN_IDENTIFICADOR  = "#FFE600"  # Amarillo Neón (Identificadores)
     TOKEN_OP_ARITMETICO  = "#00BBF9"  # Azul Eléctrico (Operadores Aritméticos)
     TOKEN_OP_COMPARACION = "#9B5DE5"  # Púrpura Neón (Operadores de Comparación)
+    TOKEN_OP_LOGICO      = "#9B5DE5"  # Púrpura / Turquesa Neón (Operadores Lógicos)
     TOKEN_OP_ASIGNACION  = "#FEE440"  # Oro Neón (Operadores de Asignación)
     TOKEN_DELIMITADOR    = "#A29BFE"  # Lavanda Neón (Delimitadores)
     TOKEN_COMENTARIO     = "#5C677D"  # Gris Neón Atenuado (Comentarios)
@@ -117,6 +118,7 @@ class CategoriaToken(str, Enum):
     OP_ARITMETICO     = "Operador Aritmético"
     OP_COMPARACION    = "Operador de Comparación"
     OP_ASIGNACION     = "Operador de Asignación"
+    OP_LOGICO         = "Operador Lógico"
     DELIMITADOR       = "Delimitador"
     COMENTARIO        = "Comentario"
     ERROR_LEXICO      = "Error Léxico / No Reconocido"
@@ -185,6 +187,7 @@ class AnalizadorLexico:
         CategoriaToken.OP_ARITMETICO:     PaletaVaporwave.TOKEN_OP_ARITMETICO,
         CategoriaToken.OP_COMPARACION:    PaletaVaporwave.TOKEN_OP_COMPARACION,
         CategoriaToken.OP_ASIGNACION:     PaletaVaporwave.TOKEN_OP_ASIGNACION,
+        CategoriaToken.OP_LOGICO:         PaletaVaporwave.TOKEN_OP_LOGICO,
         CategoriaToken.DELIMITADOR:       PaletaVaporwave.TOKEN_DELIMITADOR,
         CategoriaToken.COMENTARIO:        PaletaVaporwave.TOKEN_COMENTARIO,
     }
@@ -213,6 +216,11 @@ class AnalizadorLexico:
             CategoriaToken.NUMERO_ENTERO,
             r"^\d+$",
             "Número entero sin signo"
+        ),
+        (
+            CategoriaToken.OP_LOGICO,
+            r"^(&&|\|\||!|&|\|)$",
+            "Operador lógico booleano"
         ),
         (
             CategoriaToken.OP_COMPARACION,
@@ -251,6 +259,7 @@ class AnalizadorLexico:
         ("NUMERO_DECIMAL",         r"\b\d+\.\d+([eE][+-]?\d+)?\b"),
         ("IDENTIFICADOR_INVALIDO", r"\b\d+[a-zA-Z_]\w*\b"),
         ("NUMERO_ENTERO",          r"\b\d+\b"),
+        ("OP_LOGICO",              r"&&|\|\||!(?!=)"),
         ("OP_COMPARACION",         r"==|!=|<=|>=|<|>"),
         ("OP_ASIGNACION",          r"\+=|-=|\*=|/=|%=|="),
         ("OP_ARITMETICO",          r"\+\+|--|\+|-|\*|/|%"),
@@ -413,6 +422,16 @@ class AnalizadorLexico:
                     columna=columna,
                     color_hex=self.MAPA_COLORES[CategoriaToken.ERROR_LEXICO],
                     descripcion=f"Error léxico: Identificador inválido '{lexema}'. No puede iniciar con dígito"
+                ))
+
+            elif tipo == "OP_LOGICO":
+                tokens.append(Token(
+                    categoria=CategoriaToken.OP_LOGICO,
+                    lexema=lexema,
+                    linea=linea,
+                    columna=columna,
+                    color_hex=self.MAPA_COLORES[CategoriaToken.OP_LOGICO],
+                    descripcion="Operador lógico booleano"
                 ))
 
             elif tipo == "OP_COMPARACION":
@@ -1135,6 +1154,11 @@ def ejecutar_suite_pruebas() -> bool:
         ("/",  CategoriaToken.OP_ARITMETICO, "Operador división"),
         ("%",  CategoriaToken.OP_ARITMETICO, "Operador módulo"),
         ("++", CategoriaToken.OP_ARITMETICO, "Operador incremento"),
+
+        # Categoría: Operadores Lógicos
+        ("&&", CategoriaToken.OP_LOGICO, "Operador lógico AND"),
+        ("||", CategoriaToken.OP_LOGICO, "Operador lógico OR"),
+        ("!",  CategoriaToken.OP_LOGICO, "Operador lógico NOT"),
 
         # Categoría 7: Operadores de Comparación
         ("==", CategoriaToken.OP_COMPARACION, "Operador igual que"),

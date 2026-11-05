@@ -27,6 +27,7 @@
             --token-id: #FFE600;
             --token-op-aritmetico: #00BBF9;
             --token-op-comparacion: #9B5DE5;
+            --token-op-logico: #9B5DE5;
             --token-op-asignacion: #FEE440;
             --token-delimitador: #A29BFE;
             --token-comentario: #5C677D;
@@ -759,6 +760,9 @@
                 <button class="chip-btn" data-lexema=">=">&gt;=</button>
                 <button class="chip-btn" data-lexema="+=">+=</button>
                 <button class="chip-btn" data-lexema="++">++</button>
+                <button class="chip-btn" data-lexema="&&">&amp;&amp;</button>
+                <button class="chip-btn" data-lexema="||">||</button>
+                <button class="chip-btn" data-lexema="!">!</button>
                 <button class="chip-btn" data-lexema=";">;</button>
                 <button class="chip-btn" data-lexema="99error">99error</button>
                 <button class="chip-btn" data-lexema="$precio">$precio</button>
@@ -836,6 +840,7 @@
                         <option value="Cadena de Texto">Cadenas de Texto</option>
                         <option value="Operador Aritmético">Operadores Aritméticos</option>
                         <option value="Operador de Comparación">Operadores de Comparación</option>
+                        <option value="Operador Lógico">Operadores Lógicos (&amp;&amp;, ||, !)</option>
                         <option value="Operador de Asignación">Operadores de Asignación</option>
                         <option value="Delimitador">Delimitadores</option>
                         <option value="Comentario">Comentarios</option>
@@ -891,6 +896,7 @@
                 IDENTIFICADOR:  "#FFE600", // Amarillo Cyber (Identificadores)
                 OP_ARITMETICO:  "#00BBF9", // Azul Eléctrico (Operadores Aritméticos)
                 OP_COMPARACION: "#9B5DE5", // Púrpura Neón (Operadores de Comparación)
+                OP_LOGICO:      "#9B5DE5", // Púrpura Neón (Operadores Lógicos)
                 OP_ASIGNACION:  "#FEE440", // Oro Neón (Operadores de Asignación)
                 DELIMITADOR:    "#A29BFE", // Lavanda Neón (Delimitadores)
                 COMENTARIO:     "#5C677D"  // Gris Neón Atenuado (Comentarios)
@@ -910,6 +916,7 @@
                 { cat: "Cadena de Texto",        regex: /^("(?:\\.|[^"\\])*"|'(?:\\.|[^\'\\])*')$/,       color: PALETA.CADENA,         desc: "Literal de cadena delimitada por comillas" },
                 { cat: "Número Decimal",         regex: /^\d+\.\d+([eE][+-]?\d+)?$/,                    color: PALETA.NUMERO,         desc: "Número de punto flotante / decimal" },
                 { cat: "Número Entero",          regex: /^\d+$/,                                        color: PALETA.NUMERO,         desc: "Número entero sin signo" },
+                { cat: "Operador Lógico",         regex: /^(&&|\|\||!|&|\|)$/,                           color: PALETA.OP_LOGICO,      desc: "Operador lógico booleano" },
                 { cat: "Operador de Comparación", regex: /^(==|!=|<=|>=|<|>)$/,                          color: PALETA.OP_COMPARACION, desc: "Operador relacional de comparación" },
                 { cat: "Operador de Asignación",  regex: /^(\+=|-=|\*=|\/=|%=|=)$/,                      color: PALETA.OP_ASIGNACION,  desc: "Operador de asignación (simple o compuesto)" },
                 { cat: "Operador Aritmético",    regex: /^(\+\+|--|\+|-|\*|\/|%)$/,                     color: PALETA.OP_ARITMETICO,  desc: "Operador aritmético binario o unario" },
@@ -925,6 +932,7 @@
                 { tipo: "NUMERO_DECIMAL",         regex: /^\d+\.\d+([eE][+-]?\d+)?\b/,              cat: "Número Decimal",                color: PALETA.NUMERO,         desc: "Constante numérica de punto flotante" },
                 { tipo: "IDENTIFICADOR_INVALIDO", regex: /^\d+[a-zA-Z_]\w*\b/,                      cat: "Error Léxico / No Reconocido",   color: PALETA.ERROR,          desc: "Error léxico: Identificador inválido (no puede iniciar con dígito)" },
                 { tipo: "NUMERO_ENTERO",          regex: /^\d+\b/,                                  cat: "Número Entero",                 color: PALETA.NUMERO,         desc: "Constante numérica entera" },
+                { tipo: "OP_LOGICO",              regex: /^(&&|\|\||!(?!=))/,                       cat: "Operador Lógico",                 color: PALETA.OP_LOGICO,      desc: "Operador lógico booleano" },
                 { tipo: "OP_COMPARACION",         regex: /^(==|!=|<=|>=|<|>)/,                      cat: "Operador de Comparación",       color: PALETA.OP_COMPARACION, desc: "Operador relacional de comparación" },
                 { tipo: "OP_ASIGNACION",          regex: /^(\+=|-=|\*=|\/=|%=|=)/,                  cat: "Operador de Asignación",        color: PALETA.OP_ASIGNACION,  desc: "Operador de asignación" },
                 { tipo: "OP_ARITMETICO",          regex: /^(\+\+|--|\+|-|\*|\/|%)/,                 cat: "Operador Aritmético",           color: PALETA.OP_ARITMETICO,  desc: "Operador aritmético" },
