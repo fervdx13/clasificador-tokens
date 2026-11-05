@@ -57,16 +57,16 @@
         }
 
         .container {
-            max-width: 1380px;
+            max-width: 1400px;
             margin: 0 auto;
         }
 
         /* ---------------- HEADER & METADATOS ---------------- */
         header {
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
             border-bottom: 2px solid var(--color-primario);
-            padding-bottom: 24px;
+            padding-bottom: 22px;
             box-shadow: 0 6px 25px rgba(255, 0, 127, 0.25);
             position: relative;
         }
@@ -104,13 +104,13 @@
         }
 
         .meta-alumno {
-            margin-top: 16px;
+            margin-top: 14px;
             display: inline-flex;
             flex-wrap: wrap;
             justify-content: center;
             gap: 20px;
             background: var(--contenedor-tarjeta);
-            padding: 10px 26px;
+            padding: 9px 24px;
             border-radius: 30px;
             border: 1px solid var(--color-secundario);
             box-shadow: 0 0 14px rgba(0, 245, 212, 0.25);
@@ -122,12 +122,16 @@
             letter-spacing: 0.5px;
         }
 
+        .header-actions {
+            margin-top: 14px;
+        }
+
         /* ---------------- MÉTRICAS SUPERIORES ---------------- */
         .grid-stats {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 18px;
-            margin-bottom: 28px;
+            margin-bottom: 22px;
         }
 
         .stat-card {
@@ -167,6 +171,96 @@
             margin-top: 6px;
             letter-spacing: 1px;
             transition: all 0.3s ease;
+        }
+
+        /* ---------------- MEJORA 3: BARRA DE DISTRIBUCIÓN SEGMENTADA ---------------- */
+        .seccion-distribucion {
+            background: var(--contenedor-tarjeta);
+            border-radius: 12px;
+            padding: 18px 22px;
+            margin-bottom: 28px;
+            border: 1px solid var(--borde-suave);
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+
+        .distribucion-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .distribucion-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.95rem;
+            color: var(--color-secundario);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .distribucion-meta {
+            font-size: 0.9rem;
+            color: #9aa5b5;
+            font-family: 'Fira Code', monospace;
+        }
+
+        .barra-distribucion-wrapper {
+            height: 20px;
+            width: 100%;
+            background: #090611;
+            border-radius: 10px;
+            overflow: hidden;
+            display: flex;
+            border: 1px solid #332152;
+            box-shadow: inset 0 2px 6px rgba(0, 0, 0, 0.8);
+            margin: 8px 0 14px;
+        }
+
+        .distribucion-segmento {
+            height: 100%;
+            transition: width 0.45s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .distribucion-segmento:hover {
+            filter: brightness(1.25);
+            box-shadow: 0 0 10px currentColor;
+            z-index: 2;
+        }
+
+        .leyenda-distribucion-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px 14px;
+            align-items: center;
+        }
+
+        .leyenda-item {
+            display: inline-flex;
+            align-items: center;
+            gap: 7px;
+            font-size: 0.86rem;
+            background: #0d0a17;
+            padding: 4px 10px;
+            border-radius: 14px;
+            border: 1px solid #291c3d;
+        }
+
+        .leyenda-punto {
+            width: 9px;
+            height: 9px;
+            border-radius: 50%;
+            display: inline-block;
+            box-shadow: 0 0 6px currentColor;
+        }
+
+        .leyenda-porcentaje {
+            font-family: 'Fira Code', monospace;
+            font-weight: 700;
+            color: #ffffff;
         }
 
         /* ---------------- SECCIÓN 1: EVALUADOR DE LEXEMA ÚNICO ---------------- */
@@ -365,12 +459,12 @@
         /* ---------------- SECCIÓN 2: ANALIZADOR DE CÓDIGO COMPLETO ---------------- */
         .layout-analizador {
             display: grid;
-            grid-template-columns: 1fr 1.5fr;
+            grid-template-columns: 1fr 1.55fr;
             gap: 22px;
             margin-bottom: 30px;
         }
 
-        @media (max-width: 1040px) {
+        @media (max-width: 1060px) {
             .layout-analizador {
                 grid-template-columns: 1fr;
             }
@@ -482,6 +576,51 @@
             border-color: #6343a4;
         }
 
+        /* MEJORA 2: BOTONES DE EXPORTACIÓN CSV Y JSON */
+        .export-actions {
+            display: inline-flex;
+            gap: 8px;
+        }
+
+        .btn-export-neon {
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 0.92rem;
+            font-weight: 700;
+            padding: 6px 14px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.25s ease;
+            user-select: none;
+            background: #0d0a18;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-csv-neon {
+            color: var(--color-secundario);
+            border: 1px solid var(--color-secundario);
+        }
+
+        .btn-csv-neon:hover {
+            background: var(--color-secundario);
+            color: #0F0C1B;
+            box-shadow: 0 0 14px rgba(0, 245, 212, 0.6);
+            transform: translateY(-2px);
+        }
+
+        .btn-json-neon {
+            color: var(--color-primario);
+            border: 1px solid var(--color-primario);
+        }
+
+        .btn-json-neon:hover {
+            background: var(--color-primario);
+            color: #ffffff;
+            box-shadow: 0 0 14px rgba(255, 0, 127, 0.6);
+            transform: translateY(-2px);
+        }
+
         /* Área de Texto Editable (Código) */
         .editor-wrapper {
             position: relative;
@@ -568,21 +707,25 @@
 
         /* Scrollbar Neón */
         .scroll-wrapper::-webkit-scrollbar,
-        textarea.code-textarea::-webkit-scrollbar {
+        textarea.code-textarea::-webkit-scrollbar,
+        .modal-body::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
         .scroll-wrapper::-webkit-scrollbar-track,
-        textarea.code-textarea::-webkit-scrollbar-track {
+        textarea.code-textarea::-webkit-scrollbar-track,
+        .modal-body::-webkit-scrollbar-track {
             background: #090611;
         }
         .scroll-wrapper::-webkit-scrollbar-thumb,
-        textarea.code-textarea::-webkit-scrollbar-thumb {
+        textarea.code-textarea::-webkit-scrollbar-thumb,
+        .modal-body::-webkit-scrollbar-thumb {
             background: #392461;
             border-radius: 4px;
         }
         .scroll-wrapper::-webkit-scrollbar-thumb:hover,
-        textarea.code-textarea::-webkit-scrollbar-thumb:hover {
+        textarea.code-textarea::-webkit-scrollbar-thumb:hover,
+        .modal-body::-webkit-scrollbar-thumb:hover {
             background: var(--color-primario);
         }
 
@@ -660,6 +803,131 @@
             font-size: 0.88rem;
         }
 
+        /* ---------------- MEJORA 1: MODAL ESPECIFICACIÓN FORMAL DE TOKENS ---------------- */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(15, 12, 27, 0.88);
+            backdrop-filter: blur(8px);
+            z-index: 9999;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            animation: fadeIn 0.25s ease;
+        }
+
+        .modal-content {
+            background: var(--contenedor-tarjeta);
+            border: 2px solid var(--color-secundario);
+            border-radius: 14px;
+            box-shadow: 0 0 35px rgba(0, 245, 212, 0.35);
+            max-width: 1100px;
+            width: 100%;
+            max-height: 88vh;
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .modal-header {
+            padding: 18px 24px;
+            border-bottom: 2px solid var(--color-primario);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #120d20;
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 1.25rem;
+            color: var(--color-secundario);
+            letter-spacing: 1.5px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .btn-cerrar-modal {
+            background: transparent;
+            border: none;
+            color: var(--color-primario);
+            font-size: 1.8rem;
+            font-weight: 700;
+            cursor: pointer;
+            line-height: 1;
+            padding: 0 6px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-cerrar-modal:hover {
+            color: #ffffff;
+            transform: scale(1.2);
+        }
+
+        .modal-body {
+            padding: 20px 24px;
+            overflow-y: auto;
+        }
+
+        .modal-desc-intro {
+            font-size: 0.95rem;
+            color: #a0aec0;
+            margin-bottom: 16px;
+            line-height: 1.5;
+        }
+
+        table.tabla-gramatical {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        table.tabla-gramatical th {
+            background: #0f0a1c;
+            color: var(--color-primario);
+            padding: 10px 14px;
+            font-family: 'Orbitron', monospace;
+            font-size: 0.8rem;
+            border-bottom: 2px solid var(--color-secundario);
+        }
+
+        table.tabla-gramatical td {
+            padding: 11px 14px;
+            border-bottom: 1px solid #271a3e;
+            vertical-align: middle;
+        }
+
+        table.tabla-gramatical tr:hover {
+            background: rgba(0, 245, 212, 0.05);
+        }
+
+        .badge-color-dot {
+            width: 13px;
+            height: 13px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 6px;
+            vertical-align: middle;
+            box-shadow: 0 0 6px currentColor;
+        }
+
+        code.regex-pill {
+            background: #0b0716;
+            color: var(--color-secundario);
+            font-family: 'Fira Code', monospace;
+            font-size: 0.84rem;
+            padding: 3px 8px;
+            border-radius: 4px;
+            border: 1px solid rgba(0, 245, 212, 0.25);
+            display: inline-block;
+            word-break: break-all;
+        }
+
         /* ---------------- FOOTER ---------------- */
         footer {
             text-align: center;
@@ -704,6 +972,12 @@
                 <span>Materia: <strong>Lenguajes y Autómatas / Compiladores</strong></span>
                 <span>Estilo: <strong>Vaporwave / Cyberpunk Neon</strong></span>
             </div>
+            <!-- MEJORA 1: BOTÓN ABRIR MODAL GRAMÁTICA -->
+            <div class="header-actions">
+                <button id="btnAbrirModalGramatica" class="btn-neon-turquesa">
+                    📖 Ver Especificación Formal de Tokens
+                </button>
+            </div>
         </header>
 
         <!-- 4 TARJETAS DE MÉTRICAS -->
@@ -723,6 +997,22 @@
             <div class="stat-card fucsia" id="cardPrecision">
                 <div class="stat-title">Tasa de Aprobación <span>%</span></div>
                 <div class="stat-val" id="statPrecision" style="color: var(--token-numero);">100%</div>
+            </div>
+        </section>
+
+        <!-- MEJORA 3: BARRA DE DISTRIBUCIÓN SEGMENTADA -->
+        <section class="seccion-distribucion">
+            <div class="distribucion-header">
+                <span class="distribucion-title">📊 Proporción de Categorías en el Código:</span>
+                <span id="distribucionResumenText" class="distribucion-meta">Calculando porcentajes...</span>
+            </div>
+            <!-- Barra horizontal con segmentos proporcionales -->
+            <div id="barraDistribucion" class="barra-distribucion-wrapper">
+                <!-- Segmentos generados dinámicamente con JS -->
+            </div>
+            <!-- Leyenda con porcentajes por categoría -->
+            <div id="leyendaDistribucion" class="leyenda-distribucion-container">
+                <!-- Items generados dinámicamente con JS -->
             </div>
         </section>
 
@@ -757,12 +1047,12 @@
                 <button class="chip-btn" data-lexema="contador_2">contador_2</button>
                 <button class="chip-btn" data-lexema='"Cyberpunk 2084"'>"Cyberpunk 2084"</button>
                 <button class="chip-btn" data-lexema="42">42</button>
-                <button class="chip-btn" data-lexema=">=">&gt;=</button>
-                <button class="chip-btn" data-lexema="+=">+=</button>
-                <button class="chip-btn" data-lexema="++">++</button>
                 <button class="chip-btn" data-lexema="&&">&amp;&amp;</button>
                 <button class="chip-btn" data-lexema="||">||</button>
                 <button class="chip-btn" data-lexema="!">!</button>
+                <button class="chip-btn" data-lexema=">=">&gt;=</button>
+                <button class="chip-btn" data-lexema="+=">+=</button>
+                <button class="chip-btn" data-lexema="++">++</button>
                 <button class="chip-btn" data-lexema=";">;</button>
                 <button class="chip-btn" data-lexema="99error">99error</button>
                 <button class="chip-btn" data-lexema="$precio">$precio</button>
@@ -826,8 +1116,17 @@
 
             <!-- Columna Derecha: Tabla Dinámica de Tokens -->
             <section class="panel-tabla">
-                <div class="panel-titulo">
-                    <span>🔮</span> Tabla de Clasificación de Tokens
+                <div class="panel-titulo" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px;">
+                    <div><span>🔮</span> Tabla de Clasificación de Tokens</div>
+                    <!-- MEJORA 2: BOTONES DE EXPORTACIÓN CSV Y JSON -->
+                    <div class="export-actions">
+                        <button id="btnExportarCSV" class="btn-export-neon btn-csv-neon" title="Exportar reporte estructurado en formato CSV">
+                            <span>📥</span> Exportar CSV
+                        </button>
+                        <button id="btnExportarJSON" class="btn-export-neon btn-json-neon" title="Exportar tokens y métricas en formato JSON">
+                            <span>📄</span> Exportar JSON
+                        </button>
+                    </div>
                 </div>
 
                 <div class="tabla-toolbar">
@@ -838,10 +1137,10 @@
                         <option value="Número Entero">Números Enteros</option>
                         <option value="Número Decimal">Números Decimales</option>
                         <option value="Cadena de Texto">Cadenas de Texto</option>
-                        <option value="Operador Aritmético">Operadores Aritméticos</option>
+                        <option value="Operador Lógico">Operadores Lógicos (&&, ||, !)</option>
                         <option value="Operador de Comparación">Operadores de Comparación</option>
-                        <option value="Operador Lógico">Operadores Lógicos (&amp;&amp;, ||, !)</option>
                         <option value="Operador de Asignación">Operadores de Asignación</option>
+                        <option value="Operador Aritmético">Operadores Aritméticos</option>
                         <option value="Delimitador">Delimitadores</option>
                         <option value="Comentario">Comentarios</option>
                         <option value="Error Léxico / No Reconocido">⚠️ Solo Errores Léxicos</option>
@@ -876,6 +1175,121 @@
             SYNTH-LEX &bull; Analizador Léxico Cyberpunk Neon &bull; Proyecto Escolar <strong>2320905</strong><br>
             Desarrollado para <strong>Lenguajes y Autómatas / Compiladores</strong> &bull; Alumno: <strong>Fernando Vidal Delgado</strong>
         </footer>
+    </div>
+
+    <!-- MEJORA 1: MODAL ESPECIFICACIÓN FORMAL DE TOKENS -->
+    <div id="modalGramatica" class="modal-overlay" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-title">
+                    <span>📖</span> Especificación Formal de Tokens (Teoría de Autómatas)
+                </div>
+                <button id="btnCerrarModal" class="btn-cerrar-modal" title="Cerrar ventana">&times;</button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc-intro">
+                    Tabla gramatical formal de reconocimiento léxico implementada en el autómata determinista (DFA) del proyecto. Describe los patrones de expresiones regulares, reglas de precedencia sintáctica y códigos de color de la paleta Vaporwave / Cyberpunk Neon.
+                </p>
+
+                <table class="tabla-gramatical">
+                    <thead>
+                        <tr>
+                            <th style="width: 170px;">Categoría</th>
+                            <th>Expresión Regular (RegEx)</th>
+                            <th style="width: 130px;">Color Neón</th>
+                            <th>Descripción Sintáctica</th>
+                            <th>Ejemplos Válidos</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Palabra Reservada</strong></td>
+                            <td><code class="regex-pill">\b(if|else|while|for|do|return|int|float|string|...)\b</code></td>
+                            <td><span class="badge-color-dot" style="background:#7B2CBF; color:#7B2CBF;"></span> #7B2CBF</td>
+                            <td>Palabras clave reservadas por la gramática del compilador que no pueden fungir como identificadores de usuario.</td>
+                            <td><code>if</code>, <code>while</code>, <code>int</code>, <code>return</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Identificador</strong></td>
+                            <td><code class="regex-pill">[a-zA-Z_][a-zA-Z0-9_]*</code></td>
+                            <td><span class="badge-color-dot" style="background:#FFE600; color:#FFE600;"></span> #FFE600</td>
+                            <td>Nombres asignados a variables, funciones o estructuras. Inician con letra o guion bajo seguido de alfanuméricos.</td>
+                            <td><code>contador</code>, <code>_total</code>, <code>pi_constante</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Número Entero</strong></td>
+                            <td><code class="regex-pill">\b\d+\b</code></td>
+                            <td><span class="badge-color-dot" style="background:#F15BB5; color:#F15BB5;"></span> #F15BB5</td>
+                            <td>Constantes numéricas enteras sin parte fraccionaria ni signo explícito.</td>
+                            <td><code>0</code>, <code>42</code>, <code>100</code>, <code>9999</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Número Decimal</strong></td>
+                            <td><code class="regex-pill">\b\d+\.\d+([eE][+-]?\d+)?\b</code></td>
+                            <td><span class="badge-color-dot" style="background:#F15BB5; color:#F15BB5;"></span> #F15BB5</td>
+                            <td>Constantes numéricas de punto flotante con parte decimal y soporte de exponente científico opcional.</td>
+                            <td><code>3.14159</code>, <code>0.05</code>, <code>10.5e2</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Cadena de Texto</strong></td>
+                            <td><code class="regex-pill">"(\\.|[^"\\])*" | '(\\.|[^'\\])*'</code></td>
+                            <td><span class="badge-color-dot" style="background:#00F5D4; color:#00F5D4;"></span> #00F5D4</td>
+                            <td>Literales de caracteres delimitados por comillas simples o dobles, con secuencias de escape permitidas.</td>
+                            <td><code>"Neo Tokyo"</code>, <code>'Cyber'</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Operador Lógico</strong></td>
+                            <td><code class="regex-pill">&amp;&amp; | \|\| | !(?!=\)</code></td>
+                            <td><span class="badge-color-dot" style="background:#9B5DE5; color:#9B5DE5;"></span> #9B5DE5</td>
+                            <td>Conectores y modificadores booleanos de conjunción lógica, disyunción y negación estricta.</td>
+                            <td><code>&amp;&amp;</code>, <code>||</code>, <code>!</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Operador de Comparación</strong></td>
+                            <td><code class="regex-pill">== | != | &lt;= | &gt;= | &lt; | &gt;</code></td>
+                            <td><span class="badge-color-dot" style="background:#9B5DE5; color:#9B5DE5;"></span> #9B5DE5</td>
+                            <td>Operadores relacionales de dos operandos que evalúan igualdad o desigualdad estricta.</td>
+                            <td><code>==</code>, <code>!=</code>, <code>&lt;=</code>, <code>&gt;=</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Operador de Asignación</strong></td>
+                            <td><code class="regex-pill">= | \+= | -= | \*= | \/= | %=</code></td>
+                            <td><span class="badge-color-dot" style="background:#FEE440; color:#FEE440;"></span> #FEE440</td>
+                            <td>Operadores de asignación simple o combinada con operaciones aritméticas abreviadas.</td>
+                            <td><code>=</code>, <code>+=</code>, <code>-=</code>, <code>*=</code>, <code>/=</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Operador Aritmético</strong></td>
+                            <td><code class="regex-pill">\+ | - | \* | \/ | % | \+\+ | --</code></td>
+                            <td><span class="badge-color-dot" style="background:#00BBF9; color:#00BBF9;"></span> #00BBF9</td>
+                            <td>Operaciones matemáticas elementales binarias y unarias de incremento y decremento.</td>
+                            <td><code>+</code>, <code>-</code>, <code>*</code>, <code>/</code>, <code>++</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Delimitador</strong></td>
+                            <td><code class="regex-pill">[;,\(\)\{\}\[\]:\.]</code></td>
+                            <td><span class="badge-color-dot" style="background:#A29BFE; color:#A29BFE;"></span> #A29BFE</td>
+                            <td>Símbolos de puntuación y separación que delimitan bloques de control, arreglos y sentencias.</td>
+                            <td><code>;</code>, <code>,</code>, <code>(</code>, <code>)</code>, <code>{</code>, <code>}</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Comentario</strong></td>
+                            <td><code class="regex-pill">\/\*[\s\S]*?\*\/ | \/\/[^\n]* | #[^\n]*</code></td>
+                            <td><span class="badge-color-dot" style="background:#5C677D; color:#5C677D;"></span> #5C677D</td>
+                            <td>Anotaciones de una o múltiples líneas destinadas al programador e ignoradas por fases semánticas.</td>
+                            <td><code>// Comentario</code>, <code>/* Bloque */</code></td>
+                        </tr>
+                        <tr>
+                            <td><strong>Error Léxico / No Reconocido</strong></td>
+                            <td><code class="regex-pill">\b\d+[a-zA-Z_]\w*\b | [^\s\w...]</code></td>
+                            <td><span class="badge-color-dot" style="background:#FF0055; color:#FF0055;"></span> #FF0055</td>
+                            <td>Cualquier carácter ajeno al alfabeto del compilador o token malformado (ej. identificador que inicia con número).</td>
+                            <td><code>@invalido</code>, <code>99error</code>, <code>$saldo</code></td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 
     <!-- ======================================================================= -->
@@ -932,7 +1346,7 @@
                 { tipo: "NUMERO_DECIMAL",         regex: /^\d+\.\d+([eE][+-]?\d+)?\b/,              cat: "Número Decimal",                color: PALETA.NUMERO,         desc: "Constante numérica de punto flotante" },
                 { tipo: "IDENTIFICADOR_INVALIDO", regex: /^\d+[a-zA-Z_]\w*\b/,                      cat: "Error Léxico / No Reconocido",   color: PALETA.ERROR,          desc: "Error léxico: Identificador inválido (no puede iniciar con dígito)" },
                 { tipo: "NUMERO_ENTERO",          regex: /^\d+\b/,                                  cat: "Número Entero",                 color: PALETA.NUMERO,         desc: "Constante numérica entera" },
-                { tipo: "OP_LOGICO",              regex: /^(&&|\|\||!(?!=))/,                       cat: "Operador Lógico",                 color: PALETA.OP_LOGICO,      desc: "Operador lógico booleano" },
+                { tipo: "OP_LOGICO",              regex: /^(&&|\|\||!(?!=))/,                       cat: "Operador Lógico",               color: PALETA.OP_LOGICO,      desc: "Operador lógico booleano" },
                 { tipo: "OP_COMPARACION",         regex: /^(==|!=|<=|>=|<|>)/,                      cat: "Operador de Comparación",       color: PALETA.OP_COMPARACION, desc: "Operador relacional de comparación" },
                 { tipo: "OP_ASIGNACION",          regex: /^(\+=|-=|\*=|\/=|%=|=)/,                  cat: "Operador de Asignación",        color: PALETA.OP_ASIGNACION,  desc: "Operador de asignación" },
                 { tipo: "OP_ARITMETICO",          regex: /^(\+\+|--|\+|-|\*|\/|%)/,                 cat: "Operador Aritmético",           color: PALETA.OP_ARITMETICO,  desc: "Operador aritmético" },
@@ -1120,8 +1534,8 @@ int main() {
     string bienvenida = "Bienvenido a Neo-Tokyo 2084";
     char separador = ';';
 
-    /* Estructuras condicionales y operadores de comparación
-       Demostración de >=, !=, ==, etc. */
+    /* Estructuras condicionales y operadores lógicos / comparación
+       Evaluación de >=, !=, &&, ||, etc. */
     if (contador >= 50 && pi_constante != 0.0) {
         contador += 10;                     // Asignación compuesta
         pi_constante = pi_constante * 2.0;  // Operador aritmético
@@ -1180,7 +1594,199 @@ return 0;`;
                 const statErrores = document.getElementById("statErrores");
                 const statPrecision = document.getElementById("statPrecision");
 
+                // Elementos de las 3 Mejoras Avanzadas
+                const btnAbrirModalGramatica = document.getElementById("btnAbrirModalGramatica");
+                const btnCerrarModal = document.getElementById("btnCerrarModal");
+                const modalGramatica = document.getElementById("modalGramatica");
+
+                const btnExportarCSV = document.getElementById("btnExportarCSV");
+                const btnExportarJSON = document.getElementById("btnExportarJSON");
+
+                const barraDistribucion = document.getElementById("barraDistribucion");
+                const leyendaDistribucion = document.getElementById("leyendaDistribucion");
+                const distribucionResumenText = document.getElementById("distribucionResumenText");
+
                 let tokensActuales = [];
+
+                // -------------------------------------------------------------
+                // MEJORA 1: MODAL ESPECIFICACIÓN FORMAL DE TOKENS
+                // -------------------------------------------------------------
+                function abrirModal() {
+                    if (modalGramatica) modalGramatica.style.display = "flex";
+                }
+
+                function cerrarModal() {
+                    if (modalGramatica) modalGramatica.style.display = "none";
+                }
+
+                if (btnAbrirModalGramatica) {
+                    btnAbrirModalGramatica.addEventListener("click", abrirModal);
+                }
+
+                if (btnCerrarModal) {
+                    btnCerrarModal.addEventListener("click", cerrarModal);
+                }
+
+                if (modalGramatica) {
+                    modalGramatica.addEventListener("click", function(e) {
+                        if (e.target === modalGramatica) cerrarModal();
+                    });
+                }
+
+                window.addEventListener("keydown", function(e) {
+                    if (e.key === "Escape" && modalGramatica && modalGramatica.style.display !== "none") {
+                        cerrarModal();
+                    }
+                });
+
+                // -------------------------------------------------------------
+                // MEJORA 2: EXPORTACIÓN DE REPORTES (CSV Y JSON)
+                // -------------------------------------------------------------
+                function descargarArchivoBlob(blob, nombreArchivo) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement("a");
+                    a.href = url;
+                    a.download = nombreArchivo;
+                    document.body.appendChild(a);
+                    a.click();
+                    setTimeout(function() {
+                        document.body.removeChild(a);
+                        URL.revokeObjectURL(url);
+                    }, 100);
+                }
+
+                function ejecutarExportarCSV() {
+                    if (!tokensActuales || tokensActuales.length === 0) {
+                        alert("No hay tokens para exportar. Por favor analiza código primero.");
+                        return;
+                    }
+
+                    // BOM UTF-8 (\uFEFF) para visualización correcta en Excel y editores
+                    let csv = "\uFEFF#,Posición,Categoría,Lexema,Estado,Descripción\r\n";
+
+                    tokensActuales.forEach(function(t, i) {
+                        const num = i + 1;
+                        const pos = `L${String(t.linea).padStart(2, '0')}:C${String(t.columna).padStart(2, '0')}`;
+                        const cat = `"${t.categoria.replace(/"/g, '""')}"`;
+                        const lex = `"${t.lexema.replace(/"/g, '""').replace(/\r?\n/g, '\\n')}"`;
+                        const estado = t.esError ? '"ERROR"' : '"VALIDO"';
+                        const desc = `"${t.descripcion.replace(/"/g, '""')}"`;
+
+                        csv += `${num},${pos},${cat},${lex},${estado},${desc}\r\n`;
+                    });
+
+                    const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+                    descargarArchivoBlob(blob, "reporte_tokens_synthlex.csv");
+                }
+
+                function ejecutarExportarJSON() {
+                    if (!tokensActuales || tokensActuales.length === 0) {
+                        alert("No hay tokens para exportar. Por favor analiza código primero.");
+                        return;
+                    }
+
+                    const total = tokensActuales.length;
+                    const errores = tokensActuales.filter(function(t) { return t.esError; }).length;
+                    const validos = total - errores;
+                    const precision = total > 0 ? ((validos / total) * 100).toFixed(2) + "%" : "100.00%";
+
+                    const exportData = {
+                        proyecto: "SYNTH-LEX // Analizador Léxico (Clasificador de Tokens)",
+                        alumno: "Fernando Vidal Delgado",
+                        numero_control: "2320905",
+                        materia: "Lenguajes y Autómatas / Compiladores",
+                        paleta_visual: "Vaporwave / Cyberpunk Neon",
+                        fecha_generacion: new Date().toISOString(),
+                        estadisticas: {
+                            total_tokens: total,
+                            tokens_validos: validos,
+                            errores_lexicos: errores,
+                            tasa_aprobacion: precision
+                        },
+                        tokens: tokensActuales.map(function(t, index) {
+                            return {
+                                numero: index + 1,
+                                linea: t.linea,
+                                columna: t.columna,
+                                posicion: `L${String(t.linea).padStart(2, '0')}:C${String(t.columna).padStart(2, '0')}`,
+                                categoria: t.categoria,
+                                lexema: t.lexema,
+                                color_hex: t.color,
+                                es_error: t.esError,
+                                descripcion: t.descripcion
+                            };
+                        })
+                    };
+
+                    const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: "application/json;charset=utf-8;" });
+                    descargarArchivoBlob(blob, "reporte_tokens_synthlex.json");
+                }
+
+                if (btnExportarCSV) btnExportarCSV.addEventListener("click", ejecutarExportarCSV);
+                if (btnExportarJSON) btnExportarJSON.addEventListener("click", ejecutarExportarJSON);
+
+                // -------------------------------------------------------------
+                // MEJORA 3: GRÁFICA / BARRA DE DISTRIBUCIÓN SEGMENTADA
+                // -------------------------------------------------------------
+                function actualizarBarraDistribucion(tokens) {
+                    if (!barraDistribucion || !leyendaDistribucion) return;
+
+                    const total = tokens.length;
+                    if (total === 0) {
+                        barraDistribucion.innerHTML = '<div style="width:100%; height:100%; background:#1c132f;"></div>';
+                        leyendaDistribucion.innerHTML = '<span style="color:#718096; font-size:0.85rem;">Escribe o carga código para visualizar la distribución proporcional.</span>';
+                        if (distribucionResumenText) distribucionResumenText.textContent = "0 tokens analizados";
+                        return;
+                    }
+
+                    // Contar frecuencias por categoría
+                    const conteo = {};
+                    const colores = {};
+
+                    tokens.forEach(function(t) {
+                        const cat = t.categoria;
+                        conteo[cat] = (conteo[cat] || 0) + 1;
+                        colores[cat] = t.color;
+                    });
+
+                    // Generar segmentos de la barra
+                    let barraHtml = "";
+                    let leyendaHtml = "";
+
+                    // Ordenar de mayor a menor frecuencia
+                    const categoriasOrdenadas = Object.keys(conteo).sort(function(a, b) {
+                        return conteo[b] - conteo[a];
+                    });
+
+                    categoriasOrdenadas.forEach(function(cat) {
+                        const cantidad = conteo[cat];
+                        const porcentaje = ((cantidad / total) * 100).toFixed(1);
+                        const color = colores[cat] || "#E0E6ED";
+                        const tituloTooltip = `${cat}: ${cantidad} tokens (${porcentaje}%)`;
+
+                        barraHtml += `
+                            <div class="distribucion-segmento" 
+                                 style="width: ${porcentaje}%; background-color: ${color}; color: ${color};" 
+                                 title="${tituloTooltip}"></div>
+                        `;
+
+                        leyendaHtml += `
+                            <div class="leyenda-item" title="${tituloTooltip}">
+                                <span class="leyenda-punto" style="background-color: ${color}; color: ${color};"></span>
+                                <span style="color: #cbd5e1;">${cat}</span>
+                                <span class="leyenda-porcentaje" style="color: ${color};">${porcentaje}%</span>
+                                <span style="color: #64748b; font-size: 0.78rem;">(${cantidad})</span>
+                            </div>
+                        `;
+                    });
+
+                    barraDistribucion.innerHTML = barraHtml;
+                    leyendaDistribucion.innerHTML = leyendaHtml;
+
+                    if (distribucionResumenText) {
+                        distribucionResumenText.textContent = `${total} tokens repartidos en ${categoriasOrdenadas.length} categorías`;
+                    }
+                }
 
                 // -------------------------------------------------------------
                 // LÓGICA DE EVALUACIÓN DE LEXEMA ÚNICO
@@ -1327,6 +1933,9 @@ return 0;`;
                             el.classList.add("pulse-update");
                         }
                     });
+
+                    // Actualizar barra de distribución segmentada
+                    actualizarBarraDistribucion(tokens);
                 }
 
                 function ejecutarAnalisisCompleto() {
